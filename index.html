@@ -85,7 +85,7 @@
                     <input type="hidden" id="editing-resource-id">
                     <div class="md:col-span-2 relative">
                         <label for="resource-name" class="block text-sm font-medium text-gray-300 mb-1" data-translate-key="label_resource_name">Nom de la ressource</label>
-                        <input type="text" id="resource-name" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition placeholder-custom" data-translate-key-placeholder="placeholder_resource_name" placeholder="Ex: Plume de Piou Rouge" required autocomplete="off">
+                        <input type="text" id="resource-name" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition placeholder-custom" data-translate-key-placeholder="placeholder_resource_name" placeholder="Rechercher une ressource..." required autocomplete="off">
                         <div id="autocomplete-list" class="autocomplete-suggestions absolute z-10 w-full bg-gray-600 rounded-b-lg mt-1 overflow-y-auto max-h-60 hidden shadow-lg"></div>
                     </div>
 
@@ -201,9 +201,7 @@
                     csv_header_xp: "XP Donnée",
                     csv_header_cost_per_xp: "Coût par XP",
                     pagination_prev: "Précédent",
-                    pagination_next: "Suivant",
-                    db_loading: "Chargement de la base de données...",
-                    db_error: "Erreur de chargement de la base de données."
+                    pagination_next: "Suivant"
                 },
                 en: {
                     main_title: "Pet Profitability Calculator",
@@ -247,9 +245,7 @@
                     csv_header_xp: "XP Given",
                     csv_header_cost_per_xp: "Cost per XP",
                     pagination_prev: "Previous",
-                    pagination_next: "Next",
-                    db_loading: "Loading database...",
-                    db_error: "Error loading database."
+                    pagination_next: "Next"
                 },
                 es: {
                     main_title: "Calculadora de Rentabilidad para Mascota",
@@ -293,8 +289,7 @@
                     csv_header_xp: "XP Dada",
                     csv_header_cost_per_xp: "Costo por XP",
                     pagination_prev: "Anterior",
-                    pagination_next: "Siguiente",
-                    db_loading: "Cargando base de datos..."
+                    pagination_next: "Siguiente"
                 },
                 'pt-br': {
                     main_title: "Calculadora de Rentabilidade para Mascote",
@@ -338,8 +333,7 @@
                     csv_header_xp: "XP Fornecida",
                     csv_header_cost_per_xp: "Custo por XP",
                     pagination_prev: "Anterior",
-                    pagination_next: "Próximo",
-                    db_loading: "Carregando banco de dados..."
+                    pagination_next: "Próximo"
                 },
                 it: {
                     main_title: "Calcolatore di Redditività per Famiglio",
@@ -383,8 +377,7 @@
                     csv_header_xp: "XP Fornita",
                     csv_header_cost_per_xp: "Costo per XP",
                     pagination_prev: "Precedente",
-                    pagination_next: "Successivo",
-                    db_loading: "Caricamento del database..."
+                    pagination_next: "Successivo"
                 }
             };
 
@@ -407,13 +400,11 @@
             const searchInput = document.getElementById('search-input');
             const paginationContainer = document.getElementById('pagination-container');
             const autocompleteList = document.getElementById('autocomplete-list');
-            const dbLoader = document.getElementById('db-loader');
 
             let resources = [];
             let currentLanguage = 'fr';
             let currentPage = 1;
             const resultsPerPage = 5;
-            let apiResources = [];
             let apiFetchController;
 
             // --- API Autocomplete ---
@@ -426,7 +417,8 @@
 
                 try {
                     // Using the public API endpoint with FeathersJS query syntax
-                    const apiUrl = `https://api.dofusdb.fr/resources?name[$search]=${encodeURIComponent(query)}&$limit=10&$select[]=name&$select[]=imgUrl`;
+                    // We search in 'items' and filter by 'typeId: 8' which corresponds to "Ressource"
+                    const apiUrl = `https://api.dofusdb.fr/items?name[$search]=${encodeURIComponent(query)}&typeId=8&$limit=10&$select[]=name&$select[]=imgUrl`;
                     const response = await fetch(apiUrl, { signal });
                     if (!response.ok) throw new Error('API response not OK');
                     
