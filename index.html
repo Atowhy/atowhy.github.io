@@ -30,6 +30,27 @@
             color: white;
             font-weight: bold;
         }
+        .autocomplete-suggestions::-webkit-scrollbar {
+            width: 8px;
+        }
+        .autocomplete-suggestions::-webkit-scrollbar-track {
+            background: #2d3748;
+        }
+        .autocomplete-suggestions::-webkit-scrollbar-thumb {
+            background-color: #4a5568;
+            border-radius: 4px;
+        }
+        .loader {
+            border: 3px solid #4a5568;
+            border-left-color: #5eead4;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-white antialiased">
@@ -73,9 +94,10 @@
                 <h2 id="form-title" class="text-xl font-semibold mb-4 text-white" data-translate-key="add_resource_title">Ajouter une ressource à comparer</h2>
                 <form id="resource-form" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                     <input type="hidden" id="editing-resource-id">
-                    <div class="md:col-span-2">
+                    <div class="md:col-span-2 relative">
                         <label for="resource-name" class="block text-sm font-medium text-gray-300 mb-1" data-translate-key="label_resource_name">Nom de la ressource</label>
-                        <input type="text" id="resource-name" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition placeholder-custom" data-translate-key-placeholder="placeholder_resource_name" placeholder="Ex: Plume de Piou Rouge" required>
+                        <input type="text" id="resource-name" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition placeholder-custom" data-translate-key-placeholder="placeholder_resource_name" placeholder="Ex: Plume de Piou Rouge" required autocomplete="off">
+                        <div id="autocomplete-list" class="autocomplete-suggestions absolute z-10 w-full bg-gray-600 rounded-b-lg mt-1 overflow-y-auto max-h-60 hidden shadow-lg"></div>
                     </div>
 
                     <div>
@@ -102,7 +124,10 @@
                      </div>
                 </div>
                 <div id="results-container" class="space-y-3">
-                    <p id="empty-message-comparator" class="text-center text-gray-500 py-8" data-translate-key="empty_comparator">Aucune ressource ajoutée pour le moment.</p>
+                    <div id="db-loader" class="text-center text-gray-500 py-8 flex justify-center items-center gap-3">
+                        <div class="loader"></div>
+                        <span data-translate-key="db_loading">Chargement de la base de données...</span>
+                    </div>
                 </div>
                 <div id="pagination-container" class="flex justify-center items-center mt-6 space-x-2"></div>
             </div>
@@ -146,6 +171,8 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            let dofusResources = [];
+
             // --- Translation Dictionary ---
             const translations = {
                 fr: {
@@ -190,7 +217,9 @@
                     csv_header_xp: "XP Donnée",
                     csv_header_cost_per_xp: "Coût par XP",
                     pagination_prev: "Précédent",
-                    pagination_next: "Suivant"
+                    pagination_next: "Suivant",
+                    db_loading: "Chargement de la base de données...",
+                    db_error: "Erreur de chargement de la base de données."
                 },
                 en: {
                     main_title: "Pet Profitability Calculator",
@@ -234,7 +263,9 @@
                     csv_header_xp: "XP Given",
                     csv_header_cost_per_xp: "Cost per XP",
                     pagination_prev: "Previous",
-                    pagination_next: "Next"
+                    pagination_next: "Next",
+                    db_loading: "Loading database...",
+                    db_error: "Error loading database."
                 },
                 es: {
                     main_title: "Calculadora de Rentabilidad para Mascota",
@@ -278,7 +309,8 @@
                     csv_header_xp: "XP Dada",
                     csv_header_cost_per_xp: "Costo por XP",
                     pagination_prev: "Anterior",
-                    pagination_next: "Siguiente"
+                    pagination_next: "Siguiente",
+                    db_loading: "Cargando base de datos..."
                 },
                 'pt-br': {
                     main_title: "Calculadora de Rentabilidade para Mascote",
@@ -322,7 +354,8 @@
                     csv_header_xp: "XP Fornecida",
                     csv_header_cost_per_xp: "Custo por XP",
                     pagination_prev: "Anterior",
-                    pagination_next: "Próximo"
+                    pagination_next: "Próximo",
+                    db_loading: "Carregando banco de dados..."
                 },
                 it: {
                     main_title: "Calcolatore di Redditività per Famiglio",
@@ -366,7 +399,8 @@
                     csv_header_xp: "XP Fornita",
                     csv_header_cost_per_xp: "Costo per XP",
                     pagination_prev: "Precedente",
-                    pagination_next: "Successivo"
+                    pagination_next: "Successivo",
+                    db_loading: "Caricamento del database..."
                 }
             };
 
@@ -388,12 +422,33 @@
             const exportBtn = document.getElementById('export-csv-btn');
             const searchInput = document.getElementById('search-input');
             const paginationContainer = document.getElementById('pagination-container');
+            const autocompleteList = document.getElementById('autocomplete-list');
+            const dbLoader = document.getElementById('db-loader');
 
             let resources = [];
             let currentLanguage = 'fr';
             let currentPage = 1;
             const resultsPerPage = 5;
             
+            // --- Database Loading ---
+            async function loadDatabase() {
+                try {
+                    // Using the raw GitHub content URL
+                    const response = await fetch('https://raw.githubusercontent.com/Atowhy/Database-Dofus-Ressources-Familiers/main/db.json');
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    dofusResources = await response.json();
+                    dbLoader.style.display = 'none'; // Hide loader on success
+                    renderResources(); // Initial render after DB load
+                } catch (error) {
+                    console.error('Failed to load database:', error);
+                    const dbLoaderSpan = dbLoader.querySelector('span');
+                    dbLoaderSpan.textContent = translations[currentLanguage].db_error;
+                    dbLoaderSpan.classList.add('text-red-400');
+                }
+            }
+
             // --- Translation Function ---
             function setLanguage(lang) {
                 currentLanguage = lang;
@@ -417,6 +472,41 @@
                 renderResources(); // Re-render resources with new language
                 levelCostResults.innerHTML = `<p data-translate-key="empty_calculator">${translations[currentLanguage].empty_calculator}</p>`; // Reset calculator results
             }
+            
+            // --- Autocomplete ---
+            resourceNameInput.addEventListener('input', () => {
+                const query = resourceNameInput.value.toLowerCase();
+                if (query.length < 2 || dofusResources.length === 0) {
+                    autocompleteList.classList.add('hidden');
+                    return;
+                }
+
+                const suggestions = dofusResources.filter(r => r.name.toLowerCase().includes(query)).slice(0, 50);
+                
+                autocompleteList.innerHTML = '';
+                if (suggestions.length > 0) {
+                    suggestions.forEach(suggestion => {
+                        const item = document.createElement('div');
+                        item.className = 'p-3 hover:bg-gray-500 cursor-pointer flex items-center gap-3';
+                        item.innerHTML = `<span>${suggestion.name}</span>`;
+                        item.addEventListener('click', () => {
+                            resourceNameInput.value = suggestion.name;
+                            autocompleteList.classList.add('hidden');
+                        });
+                        autocompleteList.appendChild(item);
+                    });
+                    autocompleteList.classList.remove('hidden');
+                } else {
+                    autocompleteList.classList.add('hidden');
+                }
+            });
+            
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.relative')) {
+                    autocompleteList.classList.add('hidden');
+                }
+            });
+
 
             // --- LocalStorage Functions ---
             function saveResourcesToLocalStorage() {
@@ -524,6 +614,12 @@
 
             // --- Rendering ---
             function renderResources() {
+                if (dofusResources.length === 0) {
+                    // DB not loaded yet, keep loader visible
+                    return;
+                }
+                dbLoader.style.display = 'none'; // Hide loader once we can render
+
                 const searchTerm = searchInput.value.toLowerCase();
                 const filteredResources = resources.filter(res => res.name.toLowerCase().includes(searchTerm));
 
@@ -745,6 +841,7 @@
             // --- Initial Load ---
             languageSelector.addEventListener('change', (e) => setLanguage(e.target.value));
             
+            loadDatabase();
             const savedLang = localStorage.getItem('dofusPetLang') || 'fr';
             loadResourcesFromLocalStorage();
             setLanguage(savedLang);
