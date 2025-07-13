@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculateur de Rentabilité pour Familier Dofus</title>
+    <link rel="icon" type="image/png" href="https://www.dofuspourlesnoobs.com/uploads/1/3/0/1/13010384/custom_themes/586567114324766674/files/familiers/bebe-pandawa.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
@@ -19,41 +20,10 @@
             background-color: rgba(20, 184, 166, 0.1);
         }
         
-        /* New Animation for the best choice row */
-        @property --angle {
-          syntax: '<angle>';
-          initial-value: 0deg;
-          inherits: false;
-        }
-
-        @keyframes spin {
-          to {
-            --angle: 360deg;
-          }
-        }
-
+        /* Simple border for the best choice */
         .best-choice {
-            position: relative;
-            border: 2px solid transparent; /* The border will be created by the pseudo-element */
-        }
-
-        .best-choice::before {
-            content: '';
-            position: absolute;
-            z-index: -1;
-            inset: -2px; /* Controls border thickness */
-            border-radius: 10px; /* Should match parent's rounded-lg */
-            background: conic-gradient(
-                from var(--angle),
-                #0f766e, /* Darker teal */
-                #5eead4, /* Light teal (the light streak) */
-                #0f766e 10%, /* End of the first streak */
-                #0f766e 50%, /* Start of the second streak */
-                #5eead4,
-                #0f766e 60%, /* End of the second streak */
-                #0f766e
-            );
-            animation: spin 4s linear infinite;
+            border-color: #14b8a6; /* teal-500 */
+            position: relative; /* Needed for the overlay */
         }
     </style>
 </head>
@@ -448,7 +418,7 @@
                 resources.forEach((res, index) => {
                     const isBest = index === 0;
                     const card = document.createElement('div');
-                    card.className = `p-4 rounded-lg shadow-md flex flex-col md:flex-row items-center justify-between gap-4 transition bg-gray-800 ${isBest ? 'best-choice' : 'border-2 border-gray-700'}`;
+                    card.className = `p-4 rounded-lg shadow-md flex flex-col md:flex-row items-center justify-between gap-4 transition bg-gray-800 border-2 ${isBest ? 'best-choice' : 'border-gray-700'}`;
 
                     const contentWrapper = document.createElement('div');
                     contentWrapper.className = `w-full flex flex-col md:flex-row items-center justify-between gap-4 z-10 relative`;
@@ -480,7 +450,7 @@
 
                     if (isBest) {
                         const overlay = document.createElement('div');
-                        overlay.className = 'absolute inset-0 flex items-center justify-center z-0 pointer-events-none'; // z-0 to be behind content
+                        overlay.className = 'absolute inset-0 flex items-center justify-center z-0 pointer-events-none';
                         overlay.innerHTML = `<p class="text-teal-300 text-xl font-bold opacity-25" data-translate-key="best_choice_text">${translations[currentLanguage].best_choice_text}</p>`;
                         card.appendChild(overlay);
                     }
