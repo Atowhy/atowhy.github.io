@@ -10,70 +10,92 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #111827; /* bg-gray-900 */
+        }
+        .main-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://upload.wikimedia.org/wikipedia/fr/thumb/5/52/Dofus_logo.svg/1200px-Dofus_logo.svg.png');
+            background-size: 50%;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.05;
+            z-index: 0;
         }
     </style>
 </head>
-<body class="bg-gray-900 text-white antialiased">
+<body class="text-white antialiased">
 
-    <div class="container mx-auto p-4 md:p-8 max-w-4xl min-h-screen flex flex-col">
-        
-        <!-- Sélecteur de langue -->
-        <div class="flex justify-end mb-4">
-            <select id="language-selector" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-1 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
-                <option value="fr">🇫🇷 Français</option>
-                <option value="en">🇬🇧 English</option>
-                <option value="es">🇪🇸 Español</option>
-                <option value="pt-br">🇧🇷 Português (BR)</option>
-                <option value="it">🇮🇹 Italiano</option>
-            </select>
-        </div>
-
-        <!-- En-tête -->
-        <header class="text-center my-12">
-            <h1 class="text-4xl md:text-5xl font-bold text-teal-400" data-translate-key="main_title">Outils pour Dofus</h1>
-            <p class="text-gray-400 mt-2" data-translate-key="subtitle">Une collection d'outils pour vous aider dans votre aventure.</p>
-        </header>
-
-        <!-- Contenu principal -->
-        <main class="flex-grow">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                
-                <!-- Carte pour le calculateur -->
-                <div class="bg-gray-800 p-6 rounded-2xl shadow-lg flex flex-col justify-between hover:border-teal-500 border-2 border-transparent transition-all duration-300 transform hover:-translate-y-1">
-                    <div>
-                        <div class="flex justify-center mb-4">
-                            <img src="images/tifoux.png" alt="Tifoux" class="h-28 w-28 object-contain" onerror="this.onerror=null;this.src='https://www.dofuspourlesnoobs.com/uploads/1/3/0/1/13010384/custom_themes/586567114324766674/files/familiers/tifoux.png';">
-                        </div>
-                        <h2 class="text-2xl font-bold text-white mb-2 text-center" data-translate-key="calculator_title">Calculateur d'xp pour familier</h2>
-                        <p class="text-gray-400 mb-6 text-center" data-translate-key="calculator_desc">
-                            Optimisez les coûts pour monter vos familiers en trouvant les ressources les plus rentables.
-                        </p>
-                    </div>
-                    <a href="pet_xp_calculator.html" class="mt-auto block text-center w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-4 rounded-lg transition-transform transform hover:scale-105 shadow-md" data-translate-key="btn_access">
-                        Accéder à l'outil
-                    </a>
-                </div>
-
-                <!-- Carte pour un futur outil (exemple) -->
-                <div class="bg-gray-800 p-6 rounded-2xl shadow-lg flex flex-col justify-between border-2 border-dashed border-gray-700">
-                     <div>
-                        <h2 class="text-2xl font-bold text-gray-500 mb-2" data-translate-key="soon_title">Outil à venir...</h2>
-                        <p class="text-gray-600 mb-6" data-translate-key="soon_desc">
-                           Un nouvel outil sera bientôt disponible ici.
-                        </p>
-                    </div>
-                     <div class="mt-auto block text-center w-full bg-gray-700 text-gray-500 font-bold py-3 px-4 rounded-lg cursor-not-allowed" data-translate-key="btn_unavailable">
-                        Indisponible
-                    </div>
-                </div>
-
+    <div class="main-container relative min-h-screen">
+        <div class="relative z-10 container mx-auto p-4 md:p-8 max-w-4xl min-h-screen flex flex-col">
+            
+            <!-- Sélecteur de langue -->
+            <div class="flex justify-end mb-4">
+                <select id="language-selector" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-1 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
+                    <option value="fr">🇫🇷 Français</option>
+                    <option value="en">🇬🇧 English</option>
+                    <option value="es">🇪🇸 Español</option>
+                    <option value="pt-br">🇧🇷 Português (BR)</option>
+                    <option value="it">🇮🇹 Italiano</option>
+                </select>
             </div>
-        </main>
 
-        <!-- Pied de page -->
-        <footer class="text-center text-gray-500 text-sm mt-12 pb-4">
-            <p>By Ato</p>
-        </footer>
+            <!-- En-tête -->
+            <header class="text-center my-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-teal-400" data-translate-key="main_title">Outils pour Dofus</h1>
+                <p class="text-gray-400 mt-2" data-translate-key="subtitle">Une collection d'outils pour vous aider dans votre aventure.</p>
+            </header>
+
+            <!-- Contenu principal -->
+            <main class="flex-grow">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    
+                    <!-- Carte pour le calculateur -->
+                    <div class="bg-gray-800 p-6 rounded-2xl shadow-lg flex flex-col justify-between hover:border-teal-500 border-2 border-transparent transition-all duration-300 transform hover:-translate-y-1">
+                        <div>
+                            <div class="flex justify-center mb-4">
+                                <img src="images/tifoux.png" alt="Tifoux" class="h-28 w-28 object-contain" onerror="this.onerror=null;this.src='https://www.dofuspourlesnoobs.com/uploads/1/3/0/1/13010384/custom_themes/586567114324766674/files/familiers/tifoux.png';">
+                            </div>
+                            <h2 class="text-2xl font-bold text-white mb-2 text-center" data-translate-key="calculator_title">Calculateur d'xp pour familier</h2>
+                            <p class="text-gray-400 mb-6 text-center" data-translate-key="calculator_desc">
+                                Optimisez les coûts pour monter vos familiers en trouvant les ressources les plus rentables.
+                            </p>
+                        </div>
+                        <a href="pet_xp_calculator.html" class="mt-auto block text-center w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-4 rounded-lg transition-transform transform hover:scale-105 shadow-md" data-translate-key="btn_access">
+                            Accéder à l'outil
+                        </a>
+                    </div>
+
+                    <!-- Carte pour un futur outil (exemple) -->
+                    <div class="bg-gray-800 p-6 rounded-2xl shadow-lg flex flex-col justify-between border-2 border-dashed border-gray-700">
+                         <div>
+                            <h2 class="text-2xl font-bold text-gray-500 mb-2" data-translate-key="soon_title">Outil à venir...</h2>
+                            <p class="text-gray-600 mb-6" data-translate-key="soon_desc">
+                               Un nouvel outil sera bientôt disponible ici.
+                            </p>
+                            <div class="flex justify-center mb-4">
+                                <img src="https://www.dofuspourlesnoobs.com/uploads/1/3/0/1/13010384/ougah_1_orig.png" alt="Ougah" class="h-20 w-20 object-contain opacity-30">
+                            </div>
+                        </div>
+                         <div class="mt-auto block text-center w-full bg-gray-700 text-gray-500 font-bold py-3 px-4 rounded-lg cursor-not-allowed" data-translate-key="btn_unavailable">
+                            Indisponible
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+
+            <!-- Pied de page -->
+            <footer class="text-center text-gray-500 text-sm mt-12 pb-4">
+                <img src="https://static.ankama.com/dofus/www/img/layout/dofus-logo-en.png" alt="Logo Dofus" class="h-12 mx-auto mb-2 opacity-50">
+                <p data-translate-key="signature">Apps by Ato</p>
+                <p class="text-xs text-gray-600 mt-4" data-translate-key="disclaimer">Dofus and any related images used on this website are the properties of Ankama</p>
+            </footer>
+        </div>
     </div>
 
     <script>
@@ -87,7 +109,9 @@
                     btn_access: "Accéder à l'outil",
                     soon_title: "Outil à venir...",
                     soon_desc: "Un nouvel outil sera bientôt disponible ici.",
-                    btn_unavailable: "Indisponible"
+                    btn_unavailable: "Indisponible",
+                    signature: "Apps by Ato",
+                    disclaimer: "Dofus et toutes les images associées utilisées sur ce site sont la propriété d'Ankama"
                 },
                 en: {
                     main_title: "Tools for Dofus",
@@ -97,7 +121,9 @@
                     btn_access: "Access the tool",
                     soon_title: "Tool coming soon...",
                     soon_desc: "A new tool will be available here soon.",
-                    btn_unavailable: "Unavailable"
+                    btn_unavailable: "Unavailable",
+                    signature: "Apps by Ato",
+                    disclaimer: "Dofus and any related images used on this website are the properties of Ankama"
                 },
                 es: {
                     main_title: "Herramientas para Dofus",
@@ -107,7 +133,9 @@
                     btn_access: "Acceder a la herramienta",
                     soon_title: "Herramienta próximamente...",
                     soon_desc: "Una nueva herramienta estará disponible aquí pronto.",
-                    btn_unavailable: "No disponible"
+                    btn_unavailable: "No disponible",
+                    signature: "Apps by Ato",
+                    disclaimer: "Dofus y cualquier imagen relacionada utilizada en este sitio web son propiedad de Ankama"
                 },
                 'pt-br': {
                     main_title: "Ferramentas para Dofus",
@@ -117,7 +145,9 @@
                     btn_access: "Acessar a ferramenta",
                     soon_title: "Ferramenta em breve...",
                     soon_desc: "Uma nova ferramenta estará disponível aqui em breve.",
-                    btn_unavailable: "Indisponível"
+                    btn_unavailable: "Indisponível",
+                    signature: "Apps by Ato",
+                    disclaimer: "Dofus e quaisquer imagens relacionadas usadas neste site são propriedade da Ankama"
                 },
                 it: {
                     main_title: "Strumenti per Dofus",
@@ -127,7 +157,9 @@
                     btn_access: "Accedi allo strumento",
                     soon_title: "Strumento in arrivo...",
                     soon_desc: "Un nuovo strumento sarà presto disponibile qui.",
-                    btn_unavailable: "Non disponibile"
+                    btn_unavailable: "Non disponibile",
+                    signature: "Apps by Ato",
+                    disclaimer: "Dofus e qualsiasi immagine correlata utilizzata su questo sito Web sono di proprietà di Ankama"
                 }
             };
 
