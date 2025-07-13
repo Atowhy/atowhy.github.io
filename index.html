@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculateur de Rentabilité pour Familier Dofus</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .placeholder-custom::placeholder {
+            color: #9ca3af;
+        }
+        .tab-active {
+            border-color: #14b8a6; /* teal-500 */
+            color: #14b8a6; /* teal-500 */
+            background-color: rgba(20, 184, 166, 0.1);
+        }
+        /* Animation for the best choice row */
+        .best-choice {
+            position: relative;
+            overflow: hidden; /* Important to contain the pseudo-elements */
+        }
+
+        .best-choice::before,
+        .best-choice::after {
+            content: '';
+            position: absolute;
+            width: 50px; /* Width of the streak */
+            height: 2px; /* Height of the streak */
+            background: linear-gradient(90deg, transparent, #5eead4); /* Gradient for the streak effect */
+            z-index: 5;
+            border-radius: 2px;
+        }
+
+        .best-choice::before {
+            animation: orbit-streak 8s linear infinite;
+        }
+
+        .best-choice::after {
+            animation: orbit-streak-reverse 8s linear infinite;
+        }
+
+        @keyframes orbit-streak {
+            0%   { top: -1px; left: -50px; transform: rotate(0deg); }
+            25%  { top: -1px; left: 100%; transform: rotate(0deg); }
+            25.1% { top: -1px; left: calc(100% + 1px); transform: rotate(90deg); }
+            50%  { top: 100%; left: calc(100% + 1px); transform: rotate(90deg); }
+            50.1% { top: calc(100% + 1px); left: 100%; transform: rotate(180deg); }
+            75%  { top: calc(100% + 1px); left: -50px; transform: rotate(180deg); }
+            75.1% { top: 100%; left: -51px; transform: rotate(270deg); }
+            100% { top: -50px; left: -51px; transform: rotate(270deg); }
+        }
+
+        @keyframes orbit-streak-reverse {
+            0%   { top: 100%; left: 100%; transform: rotate(180deg); }
+            25%  { top: 100%; left: -50px; transform: rotate(180deg); }
+            25.1% { top: calc(100% + 1px); left: -51px; transform: rotate(270deg); }
+            50%  { top: -50px; left: -51px; transform: rotate(270deg); }
+            50.1% { top: -1px; left: -50px; transform: rotate(0deg); }
+            75%  { top: -1px; left: 100%; transform: rotate(0deg); }
+            75.1% { top: 0px; left: calc(100% + 1px); transform: rotate(90deg); }
+            100% { top: 100%; left: calc(100% + 1px); transform: rotate(90deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white antialiased">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl">
+        
+        <!-- Sélecteur de langue -->
+        <div class="flex justify-end mb-4">
+            <select id="language-selector" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-1 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
+                <option value="fr">🇫🇷 Français</option>
+                <option value="en">🇬🇧 English</option>
+                <option value="es">🇪🇸 Español</option>
+                <option value="pt-br">🇧🇷 Português (BR)</option>
+                <option value="it">🇮🇹 Italiano</option>
+            </select>
+        </div>
+
+        <!-- En-tête -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-teal-400" data-translate-key="main_title">Calculateur de Rentabilité pour Familier</h1>
+            <p class="text-gray-400 mt-2" data-translate-key="subtitle">Optimisez les coûts et planifiez l'XP de votre familier sur Dofus.</p>
+        </header>
+
+        <!-- Navigation par onglets -->
+        <div class="mb-6">
+            <div class="border-b border-gray-700">
+                <nav class="flex -mb-px space-x-6" aria-label="Tabs">
+                    <button id="tab-comparator" class="tab-btn tab-active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg" data-translate-key="tab_comparator">
+                        Comparateur
+                    </button>
+                    <button id="tab-calculator" class="tab-btn text-gray-400 hover:text-teal-300 whitespace-nowrap py-4 px-1 border-b-2 border-transparent font-medium text-lg" data-translate-key="tab_calculator">
+                        Calculateur de Coût
+                    </button>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Contenu Onglet 1: Comparateur -->
+        <div id="content-comparator">
+            <div class="bg-gray-800 p-6 rounded-2xl shadow-lg mb-8">
+                <h2 class="text-xl font-semibold mb-4 text-white" data-translate-key="add_resource_title">Ajouter une ressource à comparer</h2>
+                <form id="resource-form" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                    
+                    <div class="md:col-span-2">
+                        <label for="resource-name" class="block text-sm font-medium text-gray-300 mb-1" data-translate-key="label_resource_name">Nom de la ressource</label>
+                        <input type="text" id="resource-name" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition placeholder-custom" data-translate-key-placeholder="placeholder_resource_name" placeholder="Ex: Plume de Piou Rouge" required>
+                    </div>
+
+                    <div>
+                        <label for="resource-price" class="block text-sm font-medium text-gray-300 mb-1" data-translate-key="label_price">Prix (Kamas)</label>
+                        <input type="number" id="resource-price" min="1" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition placeholder-custom" data-translate-key-placeholder="placeholder_price" placeholder="Ex: 15000" required>
+                    </div>
+                    <div>
+                        <label for="resource-xp" class="block text-sm font-medium text-gray-300 mb-1" data-translate-key="label_xp">XP Donnée</label>
+                        <input type="number" id="resource-xp" min="1" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition placeholder-custom" data-translate-key-placeholder="placeholder_xp" placeholder="Ex: 100" required>
+                    </div>
+                    <button type="submit" class="md:col-start-4 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg transition-transform transform hover:scale-105 shadow-md" data-translate-key="btn_add">
+                        Ajouter
+                    </button>
+                </form>
+            </div>
+            <div>
+                <h2 class="text-xl font-semibold mb-4 text-white" data-translate-key="comparator_results_title">Résultats du Comparateur</h2>
+                <div id="results-container" class="space-y-3">
+                    <p id="empty-message-comparator" class="text-center text-gray-500 py-8" data-translate-key="empty_comparator">Aucune ressource ajoutée pour le moment.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenu Onglet 2: Calculateur de Coût -->
+        <div id="content-calculator" class="hidden">
+            <div class="bg-gray-800 p-6 rounded-2xl shadow-lg mb-8">
+                <h2 class="text-xl font-semibold mb-4 text-white" data-translate-key="cost_calculator_title">Calculer le coût total par niveau</h2>
+                <form id="level-cost-form" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                    <div>
+                        <label for="start-level" class="block text-sm font-medium text-gray-300 mb-1" data-translate-key="label_start_level">Niveau de départ</label>
+                        <input type="number" id="start-level" min="1" max="99" value="1" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
+                    </div>
+                    <div>
+                        <label for="target-level" class="block text-sm font-medium text-gray-300 mb-1" data-translate-key="label_target_level">Niveau Cible</label>
+                        <input type="number" id="target-level" min="2" max="100" value="100" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
+                    </div>
+                    <div class="md:col-span-3">
+                        <label for="resource-select" class="block text-sm font-medium text-gray-300 mb-1" data-translate-key="label_resource_to_use">Ressource à utiliser</label>
+                        <select id="resource-select" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition"></select>
+                    </div>
+                     <button type="submit" class="md:col-span-3 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg transition-transform transform hover:scale-105 shadow-md" data-translate-key="btn_calculate">
+                        Calculer le Coût
+                    </button>
+                </form>
+            </div>
+             <div>
+                <h2 class="text-xl font-semibold mb-4 text-white" data-translate-key="calculation_results_title">Résultats du Calcul</h2>
+                <div id="level-cost-results" class="text-center text-gray-500 py-8">
+                    <p id="empty-message-calculator" data-translate-key="empty_calculator">Veuillez ajouter des ressources et remplir le formulaire pour calculer le coût.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+    <footer class="text-center text-gray-500 text-sm mt-8 pb-4">
+        <p>By Ato</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Translation Dictionary ---
+            const translations = {
+                fr: {
+                    main_title: "Calculateur de Rentabilité pour Familier",
+                    subtitle: "Optimisez les coûts et planifiez l'XP de votre familier sur Dofus.",
+                    tab_comparator: "Comparateur",
+                    tab_calculator: "Calculateur de Coût",
+                    add_resource_title: "Ajouter une ressource à comparer",
+                    label_resource_name: "Nom de la ressource",
+                    placeholder_resource_name: "Ex: Plume de Piou Rouge",
+                    label_price: "Prix (Kamas)",
+                    placeholder_price: "Ex: 15000",
+                    label_xp: "XP Donnée",
+                    placeholder_xp: "Ex: 100",
+                    btn_add: "Ajouter",
+                    comparator_results_title: "Résultats du Comparateur",
+                    empty_comparator: "Aucune ressource ajoutée pour le moment.",
+                    cost_calculator_title: "Calculer le coût total par niveau",
+                    label_start_level: "Niveau de départ",
+                    label_target_level: "Niveau Cible",
+                    label_resource_to_use: "Ressource à utiliser",
+                    btn_calculate: "Calculer le Coût",
+                    calculation_results_title: "Résultats du Calcul",
+                    empty_calculator: "Veuillez ajouter des ressources et remplir le formulaire pour calculer le coût.",
+                    cost_per_xp: "Coût par XP",
+                    label_price_card: "Prix",
+                    option_no_resource: "Aucune ressource disponible",
+                    error_level_input: "Veuillez vérifier les niveaux saisis. Le niveau cible doit être supérieur au niveau de départ.",
+                    error_select_resource: "Veuillez d'abord ajouter et sélectionner une ressource valide.",
+                    xp_required: "Expérience Requise",
+                    resources_needed: "Ressources Nécessaires",
+                    total_cost: "Coût Total Estimé",
+                    best_choice_text: "Meilleur choix"
+                },
+                en: {
+                    main_title: "Pet Profitability Calculator",
+                    subtitle: "Optimize costs and plan your pet's XP in Dofus.",
+                    tab_comparator: "Comparator",
+                    tab_calculator: "Cost Calculator",
+                    add_resource_title: "Add a resource to compare",
+                    label_resource_name: "Resource name",
+                    placeholder_resource_name: "E.g.: Red Piwi Feather",
+                    label_price: "Price (Kamas)",
+                    placeholder_price: "E.g.: 15000",
+                    label_xp: "XP Given",
+                    placeholder_xp: "E.g.: 100",
+                    btn_add: "Add",
+                    comparator_results_title: "Comparator Results",
+                    empty_comparator: "No resources added yet.",
+                    cost_calculator_title: "Calculate total cost by level",
+                    label_start_level: "Start level",
+                    label_target_level: "Target level",
+                    label_resource_to_use: "Resource to use",
+                    btn_calculate: "Calculate Cost",
+                    calculation_results_title: "Calculation Results",
+                    empty_calculator: "Please add resources and fill the form to calculate the cost.",
+                    cost_per_xp: "Cost per XP",
+                    label_price_card: "Price",
+                    option_no_resource: "No resource available",
+                    error_level_input: "Please check the entered levels. The target level must be higher than the start level.",
+                    error_select_resource: "Please add and select a valid resource first.",
+                    xp_required: "Experience Required",
+                    resources_needed: "Resources Needed",
+                    total_cost: "Estimated Total Cost",
+                    best_choice_text: "Best choice"
+                },
+                es: {
+                    main_title: "Calculadora de Rentabilidad para Mascota",
+                    subtitle: "Optimiza los costos y planifica la XP de tu mascota en Dofus.",
+                    tab_comparator: "Comparador",
+                    tab_calculator: "Calculadora de Costo",
+                    add_resource_title: "Añadir un recurso para comparar",
+                    label_resource_name: "Nombre del recurso",
+                    placeholder_resource_name: "Ej: Pluma de Pío Rojo",
+                    label_price: "Precio (Kamas)",
+                    placeholder_price: "Ej: 15000",
+                    label_xp: "XP Dada",
+                    placeholder_xp: "Ej: 100",
+                    btn_add: "Añadir",
+                    comparator_results_title: "Resultados del Comparador",
+                    empty_comparator: "No se han añadido recursos todavía.",
+                    cost_calculator_title: "Calcular el costo total por nivel",
+                    label_start_level: "Nivel de inicio",
+                    label_target_level: "Nivel objetivo",
+                    label_resource_to_use: "Recurso a utilizar",
+                    btn_calculate: "Calcular Costo",
+                    calculation_results_title: "Resultados del Cálculo",
+                    empty_calculator: "Por favor, añade recursos y rellena el formulario para calcular el costo.",
+                    cost_per_xp: "Costo por XP",
+                    label_price_card: "Precio",
+                    option_no_resource: "Ningún recurso disponible",
+                    error_level_input: "Por favor, comprueba los niveles introducidos. El nivel objetivo debe ser superior al nivel de inicio.",
+                    error_select_resource: "Por favor, añade y selecciona un recurso válido primero.",
+                    xp_required: "Experiencia Requerida",
+                    resources_needed: "Recursos Necesarios",
+                    total_cost: "Costo Total Estimado",
+                    best_choice_text: "Mejor opción"
+                },
+                'pt-br': {
+                    main_title: "Calculadora de Rentabilidade para Mascote",
+                    subtitle: "Otimize os custos e planeje a XP do seu mascote no Dofus.",
+                    tab_comparator: "Comparador",
+                    tab_calculator: "Calculadora de Custo",
+                    add_resource_title: "Adicionar um recurso para comparar",
+                    label_resource_name: "Nome do recurso",
+                    placeholder_resource_name: "Ex: Pena de Piwi Vermelho",
+                    label_price: "Preço (Kamas)",
+                    placeholder_price: "Ex: 15000",
+                    label_xp: "XP Fornecida",
+                    placeholder_xp: "Ex: 100",
+                    btn_add: "Adicionar",
+                    comparator_results_title: "Resultados do Comparador",
+                    empty_comparator: "Nenhum recurso adicionado ainda.",
+                    cost_calculator_title: "Calcular o custo total por nível",
+                    label_start_level: "Nível inicial",
+                    label_target_level: "Nível alvo",
+                    label_resource_to_use: "Recurso a ser utilizado",
+                    btn_calculate: "Calcular Custo",
+                    calculation_results_title: "Resultados do Cálculo",
+                    empty_calculator: "Por favor, adicione recursos e preencha o formulário para calcular o custo.",
+                    cost_per_xp: "Custo por XP",
+                    label_price_card: "Preço",
+                    option_no_resource: "Nenhum recurso disponível",
+                    error_level_input: "Por favor, verifique os níveis inseridos. O nível alvo deve ser maior que o nível inicial.",
+                    error_select_resource: "Por favor, adicione e selecione um recurso válido primeiro.",
+                    xp_required: "Experiência Necessária",
+                    resources_needed: "Recursos Necessários",
+                    total_cost: "Custo Total Estimado",
+                    best_choice_text: "Melhor escolha"
+                },
+                it: {
+                    main_title: "Calcolatore di Redditività per Famiglio",
+                    subtitle: "Ottimizza i costi e pianifica l'XP del tuo famiglio su Dofus.",
+                    tab_comparator: "Comparatore",
+                    tab_calculator: "Calcolatore di Costo",
+                    add_resource_title: "Aggiungi una risorsa da confrontare",
+                    label_resource_name: "Nome della risorsa",
+                    placeholder_resource_name: "Es: Piuma di Piwi Rosso",
+                    label_price: "Prezzo (Kama)",
+                    placeholder_price: "Es: 15000",
+                    label_xp: "XP Fornita",
+                    placeholder_xp: "Es: 100",
+                    btn_add: "Aggiungi",
+                    comparator_results_title: "Risultati del Comparatore",
+                    empty_comparator: "Nessuna risorsa ancora aggiunta.",
+                    cost_calculator_title: "Calcola il costo totale per livello",
+                    label_start_level: "Livello di partenza",
+                    label_target_level: "Livello di destinazione",
+                    label_resource_to_use: "Risorsa da utilizzare",
+                    btn_calculate: "Calcola Costo",
+                    calculation_results_title: "Risultati del Calcolo",
+                    empty_calculator: "Aggiungi risorse e compila il modulo per calcolare il costo.",
+                    cost_per_xp: "Costo per XP",
+                    label_price_card: "Prezzo",
+                    option_no_resource: "Nessuna risorsa disponibile",
+                    error_level_input: "Controlla i livelli inseriti. Il livello di destinazione deve essere superiore al livello di partenza.",
+                    error_select_resource: "Aggiungi e seleziona prima una risorsa valida.",
+                    xp_required: "Esperienza Richiesta",
+                    resources_needed: "Risorse Necessarie",
+                    total_cost: "Costo Totale Stimato",
+                    best_choice_text: "Scelta migliore"
+                }
+            };
+
+            // --- Elements ---
+            const form = document.getElementById('resource-form');
+            const resultsContainer = document.getElementById('results-container');
+            const resourceNameInput = document.getElementById('resource-name');
+            const levelCostForm = document.getElementById('level-cost-form');
+            const resourceSelect = document.getElementById('resource-select');
+            const levelCostResults = document.getElementById('level-cost-results');
+            const tabComparatorBtn = document.getElementById('tab-comparator');
+            const tabCalculatorBtn = document.getElementById('tab-calculator');
+            const contentComparator = document.getElementById('content-comparator');
+            const contentCalculator = document.getElementById('content-calculator');
+            const languageSelector = document.getElementById('language-selector');
+
+            let resources = [];
+            let currentLanguage = 'fr';
+            
+            // --- Translation Function ---
+            function setLanguage(lang) {
+                currentLanguage = lang;
+                localStorage.setItem('dofusPetLang', lang);
+                document.documentElement.lang = lang;
+                languageSelector.value = lang;
+
+                document.querySelectorAll('[data-translate-key]').forEach(element => {
+                    const key = element.getAttribute('data-translate-key');
+                    if (translations[lang][key]) {
+                        element.textContent = translations[lang][key];
+                    }
+                });
+
+                document.querySelectorAll('[data-translate-key-placeholder]').forEach(element => {
+                    const key = element.getAttribute('data-translate-key-placeholder');
+                     if (translations[lang][key]) {
+                        element.placeholder = translations[lang][key];
+                    }
+                });
+                renderResources(); // Re-render resources with new language
+                levelCostResults.innerHTML = `<p data-translate-key="empty_calculator">${translations[currentLanguage].empty_calculator}</p>`; // Reset calculator results
+            }
+
+            // --- LocalStorage Functions ---
+            function saveResourcesToLocalStorage() {
+                localStorage.setItem('dofusPetResources', JSON.stringify(resources));
+            }
+
+            function loadResourcesFromLocalStorage() {
+                const savedResources = localStorage.getItem('dofusPetResources');
+                if (savedResources) {
+                    resources = JSON.parse(savedResources);
+                }
+            }
+
+            // --- XP Curve Function ---
+            function getTotalXpForLevel(level) {
+                if (level <= 1) return 0;
+                return 10 * Math.pow(level - 1, 2);
+            }
+
+            // --- Tab Navigation ---
+            function switchTab(activeTab) {
+                if (activeTab === 'comparator') {
+                    contentComparator.classList.remove('hidden');
+                    contentCalculator.classList.add('hidden');
+                    tabComparatorBtn.classList.add('tab-active');
+                    tabCalculatorBtn.classList.remove('tab-active');
+                } else {
+                    contentComparator.classList.add('hidden');
+                    contentCalculator.classList.remove('hidden');
+                    tabComparatorBtn.classList.remove('tab-active');
+                    tabCalculatorBtn.classList.add('tab-active');
+                }
+            }
+            tabComparatorBtn.addEventListener('click', () => switchTab('comparator'));
+            tabCalculatorBtn.addEventListener('click', () => switchTab('calculator'));
+
+            // --- Resource Management ---
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const priceInput = document.getElementById('resource-price');
+                const xpInput = document.getElementById('resource-xp');
+                const name = resourceNameInput.value;
+                const price = parseFloat(priceInput.value);
+                const xp = parseFloat(xpInput.value);
+
+                if (!name || isNaN(price) || isNaN(xp) || price <= 0 || xp <= 0) return;
+
+                const ratio = price / xp;
+
+                resources.push({ id: Date.now(), name, price, xp, ratio });
+                resources.sort((a, b) => a.ratio - b.ratio);
+                
+                saveResourcesToLocalStorage();
+                renderResources();
+                
+                form.reset();
+                resourceNameInput.focus();
+            });
+
+            resultsContainer.addEventListener('click', (e) => {
+                const deleteBtn = e.target.closest('.delete-btn');
+                if (deleteBtn) {
+                    const resourceId = parseInt(deleteBtn.dataset.id);
+                    resources = resources.filter(res => res.id !== resourceId);
+                    saveResourcesToLocalStorage();
+                    renderResources();
+                }
+            });
+
+            // --- Rendering ---
+            function renderResources() {
+                resultsContainer.innerHTML = '';
+                resourceSelect.innerHTML = '';
+
+                if (resources.length === 0) {
+                    resultsContainer.innerHTML = `<p id="empty-message-comparator" class="text-center text-gray-500 py-8" data-translate-key="empty_comparator">${translations[currentLanguage].empty_comparator}</p>`;
+                    resourceSelect.innerHTML = `<option>${translations[currentLanguage].option_no_resource}</option>`;
+                    return;
+                }
+
+                resources.forEach((res, index) => {
+                    const isBest = index === 0;
+                    const card = document.createElement('div');
+                    card.className = `p-4 rounded-lg shadow-md flex flex-col md:flex-row items-center justify-between gap-4 border-2 transition bg-gray-800 border-gray-700 ${isBest ? 'best-choice' : ''}`;
+
+                    const contentWrapper = document.createElement('div');
+                    contentWrapper.className = `w-full flex flex-col md:flex-row items-center justify-between gap-4 z-10 relative`;
+                    
+                    contentWrapper.innerHTML = `
+                        <div class="relative w-full md:w-auto flex-grow">
+                            <div class="flex items-center gap-4">
+                                <div>
+                                    <p class="text-lg font-semibold text-white">${res.name}</p>
+                                    <div class="flex flex-wrap text-sm text-gray-400 mt-1 gap-x-4 gap-y-1">
+                                        <span>${translations[currentLanguage].label_price_card}: <strong class="text-gray-200">${res.price.toLocaleString(currentLanguage)} K</strong></span>
+                                        <span>XP: <strong class="text-gray-200">${res.xp.toLocaleString(currentLanguage)}</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 w-full md:w-auto">
+                           <div class="text-center bg-gray-700 rounded-lg p-3">
+                                <p class="text-sm text-teal-300">${translations[currentLanguage].cost_per_xp}</p>
+                                <p class="text-xl font-bold text-white">${res.ratio.toFixed(2)} K</p>
+                            </div>
+                            <button data-id="${res.id}" class="delete-btn bg-red-600 hover:bg-red-700 text-white p-3 rounded-full transition-transform transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                            </button>
+                        </div>
+                    `;
+                    
+                    card.appendChild(contentWrapper);
+
+                    if (isBest) {
+                        const overlay = document.createElement('div');
+                        overlay.className = 'absolute inset-0 flex items-center justify-center z-0 pointer-events-none'; // z-0 to be behind content
+                        overlay.innerHTML = `<p class="text-teal-300 text-2xl font-bold opacity-20" data-translate-key="best_choice_text">${translations[currentLanguage].best_choice_text}</p>`;
+                        card.appendChild(overlay);
+                    }
+
+                    resultsContainer.appendChild(card);
+
+                    const option = document.createElement('option');
+                    option.value = res.id;
+                    option.textContent = `${res.name} (${res.ratio.toFixed(2)} K/XP)`;
+                    resourceSelect.appendChild(option);
+                });
+            }
+
+            // --- Level Cost Calculation ---
+            levelCostForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const startLevel = parseInt(document.getElementById('start-level').value);
+                const targetLevel = parseInt(document.getElementById('target-level').value);
+                const selectedResourceId = parseInt(resourceSelect.value);
+
+                if (isNaN(startLevel) || isNaN(targetLevel) || isNaN(selectedResourceId) || targetLevel <= startLevel) {
+                    levelCostResults.innerHTML = `<p class="text-red-400">${translations[currentLanguage].error_level_input}</p>`;
+                    return;
+                }
+                
+                const selectedResource = resources.find(r => r.id === selectedResourceId);
+                if (!selectedResource) {
+                    levelCostResults.innerHTML = `<p class="text-red-400">${translations[currentLanguage].error_select_resource}</p>`;
+                    return;
+                }
+
+                const xpAtStart = getTotalXpForLevel(startLevel);
+                const xpAtTarget = getTotalXpForLevel(targetLevel);
+                const xpNeeded = xpAtTarget - xpAtStart;
+
+                const resourcesNeeded = Math.ceil(xpNeeded / selectedResource.xp);
+                const totalCost = resourcesNeeded * selectedResource.price;
+
+                levelCostResults.innerHTML = `
+                    <div class="bg-gray-700 p-6 rounded-lg grid grid-cols-1 md:grid-cols-3 gap-4 text-white">
+                        <div>
+                            <p class="text-sm text-gray-400">${translations[currentLanguage].xp_required}</p>
+                            <p class="text-2xl font-bold text-teal-300">${xpNeeded.toLocaleString(currentLanguage)} XP</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-400">${translations[currentLanguage].resources_needed}</p>
+                            <p class="text-2xl font-bold text-teal-300">${resourcesNeeded.toLocaleString(currentLanguage)} x ${selectedResource.name}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-400">${translations[currentLanguage].total_cost}</p>
+                            <p class="text-2xl font-bold text-teal-300">${totalCost.toLocaleString(currentLanguage)} Kamas</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // --- Initial Load ---
+            languageSelector.addEventListener('change', (e) => setLanguage(e.target.value));
+            
+            const savedLang = localStorage.getItem('dofusPetLang') || 'fr';
+            loadResourcesFromLocalStorage();
+            setLanguage(savedLang);
+        });
+    </script>
+
+</body>
+</html>
