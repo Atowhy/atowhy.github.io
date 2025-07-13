@@ -25,6 +25,11 @@
             border-color: #14b8a6; /* teal-500 */
             position: relative; /* Needed for the overlay */
         }
+        .pagination-btn.active {
+            background-color: #14b8a6;
+            color: white;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-white antialiased">
@@ -65,9 +70,9 @@
         <!-- Contenu Onglet 1: Comparateur -->
         <div id="content-comparator">
             <div class="bg-gray-800 p-6 rounded-2xl shadow-lg mb-8">
-                <h2 class="text-xl font-semibold mb-4 text-white" data-translate-key="add_resource_title">Ajouter une ressource à comparer</h2>
+                <h2 id="form-title" class="text-xl font-semibold mb-4 text-white" data-translate-key="add_resource_title">Ajouter une ressource à comparer</h2>
                 <form id="resource-form" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                    
+                    <input type="hidden" id="editing-resource-id">
                     <div class="md:col-span-2">
                         <label for="resource-name" class="block text-sm font-medium text-gray-300 mb-1" data-translate-key="label_resource_name">Nom de la ressource</label>
                         <input type="text" id="resource-name" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition placeholder-custom" data-translate-key-placeholder="placeholder_resource_name" placeholder="Ex: Plume de Piou Rouge" required>
@@ -81,16 +86,25 @@
                         <label for="resource-xp" class="block text-sm font-medium text-gray-300 mb-1" data-translate-key="label_xp">XP Donnée</label>
                         <input type="number" id="resource-xp" min="1" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition placeholder-custom" data-translate-key-placeholder="placeholder_xp" placeholder="Ex: 100" required>
                     </div>
-                    <button type="submit" class="md:col-start-4 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg transition-transform transform hover:scale-105 shadow-md" data-translate-key="btn_add">
+                    <button id="submit-btn" type="submit" class="md:col-start-4 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg transition-transform transform hover:scale-105 shadow-md" data-translate-key="btn_add">
                         Ajouter
                     </button>
                 </form>
             </div>
             <div>
-                <h2 class="text-xl font-semibold mb-4 text-white" data-translate-key="comparator_results_title">Résultats du Comparateur</h2>
+                <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
+                    <h2 class="text-xl font-semibold text-white" data-translate-key="comparator_results_title">Résultats du Comparateur</h2>
+                     <div class="flex items-center gap-4 w-full md:w-auto">
+                        <input type="search" id="search-input" class="w-full md:w-auto bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition placeholder-custom" data-translate-key-placeholder="placeholder_search" placeholder="Rechercher...">
+                        <button id="export-csv-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg text-sm transition-colors whitespace-nowrap" data-translate-key="btn_export">
+                            Exporter (CSV)
+                        </button>
+                     </div>
+                </div>
                 <div id="results-container" class="space-y-3">
                     <p id="empty-message-comparator" class="text-center text-gray-500 py-8" data-translate-key="empty_comparator">Aucune ressource ajoutée pour le moment.</p>
                 </div>
+                <div id="pagination-container" class="flex justify-center items-center mt-6 space-x-2"></div>
             </div>
         </div>
 
@@ -140,15 +154,20 @@
                     tab_comparator: "Comparateur",
                     tab_calculator: "Calculateur de Coût",
                     add_resource_title: "Ajouter une ressource à comparer",
+                    edit_resource_title: "Modifier la ressource",
                     label_resource_name: "Nom de la ressource",
                     placeholder_resource_name: "Ex: Plume de Piou Rouge",
+                    placeholder_search: "Rechercher...",
                     label_price: "Prix (Kamas)",
                     placeholder_price: "Ex: 15000",
                     label_xp: "XP Donnée",
                     placeholder_xp: "Ex: 100",
                     btn_add: "Ajouter",
+                    btn_update: "Mettre à jour",
+                    btn_export: "Exporter (CSV)",
                     comparator_results_title: "Résultats du Comparateur",
                     empty_comparator: "Aucune ressource ajoutée pour le moment.",
+                    empty_search: "Aucun résultat pour votre recherche.",
                     cost_calculator_title: "Calculer le coût total par niveau",
                     label_start_level: "Niveau de départ",
                     label_target_level: "Niveau Cible",
@@ -161,10 +180,17 @@
                     option_no_resource: "Aucune ressource disponible",
                     error_level_input: "Veuillez vérifier les niveaux saisis. Le niveau cible doit être supérieur au niveau de départ.",
                     error_select_resource: "Veuillez d'abord ajouter et sélectionner une ressource valide.",
+                    error_no_export_data: "Aucune donnée !",
                     xp_required: "Expérience Requise",
                     resources_needed: "Ressources Nécessaires",
                     total_cost: "Coût Total Estimé",
-                    best_choice_text: "Meilleur choix"
+                    best_choice_text: "Meilleur choix",
+                    csv_header_name: "Nom",
+                    csv_header_price: "Prix (Kamas)",
+                    csv_header_xp: "XP Donnée",
+                    csv_header_cost_per_xp: "Coût par XP",
+                    pagination_prev: "Précédent",
+                    pagination_next: "Suivant"
                 },
                 en: {
                     main_title: "Pet Profitability Calculator",
@@ -172,15 +198,20 @@
                     tab_comparator: "Comparator",
                     tab_calculator: "Cost Calculator",
                     add_resource_title: "Add a resource to compare",
+                    edit_resource_title: "Edit Resource",
                     label_resource_name: "Resource name",
                     placeholder_resource_name: "E.g.: Red Piwi Feather",
+                    placeholder_search: "Search...",
                     label_price: "Price (Kamas)",
                     placeholder_price: "E.g.: 15000",
                     label_xp: "XP Given",
                     placeholder_xp: "E.g.: 100",
                     btn_add: "Add",
+                    btn_update: "Update",
+                    btn_export: "Export (CSV)",
                     comparator_results_title: "Comparator Results",
                     empty_comparator: "No resources added yet.",
+                    empty_search: "No results for your search.",
                     cost_calculator_title: "Calculate total cost by level",
                     label_start_level: "Start level",
                     label_target_level: "Target level",
@@ -193,10 +224,17 @@
                     option_no_resource: "No resource available",
                     error_level_input: "Please check the entered levels. The target level must be higher than the start level.",
                     error_select_resource: "Please add and select a valid resource first.",
+                    error_no_export_data: "No data!",
                     xp_required: "Experience Required",
                     resources_needed: "Resources Needed",
                     total_cost: "Estimated Total Cost",
-                    best_choice_text: "Best choice"
+                    best_choice_text: "Best choice",
+                    csv_header_name: "Name",
+                    csv_header_price: "Price (Kamas)",
+                    csv_header_xp: "XP Given",
+                    csv_header_cost_per_xp: "Cost per XP",
+                    pagination_prev: "Previous",
+                    pagination_next: "Next"
                 },
                 es: {
                     main_title: "Calculadora de Rentabilidad para Mascota",
@@ -204,15 +242,20 @@
                     tab_comparator: "Comparador",
                     tab_calculator: "Calculadora de Costo",
                     add_resource_title: "Añadir un recurso para comparar",
+                    edit_resource_title: "Editar Recurso",
                     label_resource_name: "Nombre del recurso",
                     placeholder_resource_name: "Ej: Pluma de Pío Rojo",
+                    placeholder_search: "Buscar...",
                     label_price: "Precio (Kamas)",
                     placeholder_price: "Ej: 15000",
                     label_xp: "XP Dada",
                     placeholder_xp: "Ej: 100",
                     btn_add: "Añadir",
+                    btn_update: "Actualizar",
+                    btn_export: "Exportar (CSV)",
                     comparator_results_title: "Resultados del Comparador",
                     empty_comparator: "No se han añadido recursos todavía.",
+                    empty_search: "No hay resultados para tu búsqueda.",
                     cost_calculator_title: "Calcular el costo total por nivel",
                     label_start_level: "Nivel de inicio",
                     label_target_level: "Nivel objetivo",
@@ -225,10 +268,17 @@
                     option_no_resource: "Ningún recurso disponible",
                     error_level_input: "Por favor, comprueba los niveles introducidos. El nivel objetivo debe ser superior al nivel de inicio.",
                     error_select_resource: "Por favor, añade y selecciona un recurso válido primero.",
+                    error_no_export_data: "¡No hay datos!",
                     xp_required: "Experiencia Requerida",
                     resources_needed: "Recursos Necesarios",
                     total_cost: "Costo Total Estimado",
-                    best_choice_text: "Mejor opción"
+                    best_choice_text: "Mejor opción",
+                    csv_header_name: "Nombre",
+                    csv_header_price: "Precio (Kamas)",
+                    csv_header_xp: "XP Dada",
+                    csv_header_cost_per_xp: "Costo por XP",
+                    pagination_prev: "Anterior",
+                    pagination_next: "Siguiente"
                 },
                 'pt-br': {
                     main_title: "Calculadora de Rentabilidade para Mascote",
@@ -236,15 +286,20 @@
                     tab_comparator: "Comparador",
                     tab_calculator: "Calculadora de Custo",
                     add_resource_title: "Adicionar um recurso para comparar",
+                    edit_resource_title: "Editar Recurso",
                     label_resource_name: "Nome do recurso",
                     placeholder_resource_name: "Ex: Pena de Piwi Vermelho",
+                    placeholder_search: "Pesquisar...",
                     label_price: "Preço (Kamas)",
                     placeholder_price: "Ex: 15000",
                     label_xp: "XP Fornecida",
                     placeholder_xp: "Ex: 100",
                     btn_add: "Adicionar",
+                    btn_update: "Atualizar",
+                    btn_export: "Exportar (CSV)",
                     comparator_results_title: "Resultados do Comparador",
                     empty_comparator: "Nenhum recurso adicionado ainda.",
+                    empty_search: "Nenhum resultado para sua pesquisa.",
                     cost_calculator_title: "Calcular o custo total por nível",
                     label_start_level: "Nível inicial",
                     label_target_level: "Nível alvo",
@@ -257,10 +312,17 @@
                     option_no_resource: "Nenhum recurso disponível",
                     error_level_input: "Por favor, verifique os níveis inseridos. O nível alvo deve ser maior que o nível inicial.",
                     error_select_resource: "Por favor, adicione e selecione um recurso válido primeiro.",
+                    error_no_export_data: "Sem dados!",
                     xp_required: "Experiência Necessária",
                     resources_needed: "Recursos Necessários",
                     total_cost: "Custo Total Estimado",
-                    best_choice_text: "Melhor escolha"
+                    best_choice_text: "Melhor escolha",
+                    csv_header_name: "Nome",
+                    csv_header_price: "Preço (Kamas)",
+                    csv_header_xp: "XP Fornecida",
+                    csv_header_cost_per_xp: "Custo por XP",
+                    pagination_prev: "Anterior",
+                    pagination_next: "Próximo"
                 },
                 it: {
                     main_title: "Calcolatore di Redditività per Famiglio",
@@ -268,15 +330,20 @@
                     tab_comparator: "Comparatore",
                     tab_calculator: "Calcolatore di Costo",
                     add_resource_title: "Aggiungi una risorsa da confrontare",
+                    edit_resource_title: "Modifica Risorsa",
                     label_resource_name: "Nome della risorsa",
                     placeholder_resource_name: "Es: Piuma di Piwi Rosso",
+                    placeholder_search: "Cerca...",
                     label_price: "Prezzo (Kama)",
                     placeholder_price: "Es: 15000",
                     label_xp: "XP Fornita",
                     placeholder_xp: "Es: 100",
                     btn_add: "Aggiungi",
+                    btn_update: "Aggiorna",
+                    btn_export: "Esporta (CSV)",
                     comparator_results_title: "Risultati del Comparatore",
                     empty_comparator: "Nessuna risorsa ancora aggiunta.",
+                    empty_search: "Nessun risultato per la tua ricerca.",
                     cost_calculator_title: "Calcola il costo totale per livello",
                     label_start_level: "Livello di partenza",
                     label_target_level: "Livello di destinazione",
@@ -289,15 +356,25 @@
                     option_no_resource: "Nessuna risorsa disponibile",
                     error_level_input: "Controlla i livelli inseriti. Il livello di destinazione deve essere superiore al livello di partenza.",
                     error_select_resource: "Aggiungi e seleziona prima una risorsa valida.",
+                    error_no_export_data: "Nessun dato!",
                     xp_required: "Esperienza Richiesta",
                     resources_needed: "Risorse Necessarie",
                     total_cost: "Costo Totale Stimato",
-                    best_choice_text: "Scelta migliore"
+                    best_choice_text: "Scelta migliore",
+                    csv_header_name: "Nome",
+                    csv_header_price: "Prezzo (Kama)",
+                    csv_header_xp: "XP Fornita",
+                    csv_header_cost_per_xp: "Costo per XP",
+                    pagination_prev: "Precedente",
+                    pagination_next: "Successivo"
                 }
             };
 
             // --- Elements ---
             const form = document.getElementById('resource-form');
+            const formTitle = document.getElementById('form-title');
+            const submitBtn = document.getElementById('submit-btn');
+            const editingResourceIdInput = document.getElementById('editing-resource-id');
             const resultsContainer = document.getElementById('results-container');
             const resourceNameInput = document.getElementById('resource-name');
             const levelCostForm = document.getElementById('level-cost-form');
@@ -308,9 +385,14 @@
             const contentComparator = document.getElementById('content-comparator');
             const contentCalculator = document.getElementById('content-calculator');
             const languageSelector = document.getElementById('language-selector');
+            const exportBtn = document.getElementById('export-csv-btn');
+            const searchInput = document.getElementById('search-input');
+            const paginationContainer = document.getElementById('pagination-container');
 
             let resources = [];
             let currentLanguage = 'fr';
+            let currentPage = 1;
+            const resultsPerPage = 5;
             
             // --- Translation Function ---
             function setLanguage(lang) {
@@ -371,6 +453,14 @@
             tabComparatorBtn.addEventListener('click', () => switchTab('comparator'));
             tabCalculatorBtn.addEventListener('click', () => switchTab('calculator'));
 
+            // --- Form Reset/Mode Switch ---
+            function switchToAddMode() {
+                editingResourceIdInput.value = '';
+                form.reset();
+                formTitle.textContent = translations[currentLanguage].add_resource_title;
+                submitBtn.textContent = translations[currentLanguage].btn_add;
+            }
+
             // --- Resource Management ---
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
@@ -379,23 +469,51 @@
                 const name = resourceNameInput.value;
                 const price = parseFloat(priceInput.value);
                 const xp = parseFloat(xpInput.value);
+                const editingId = parseInt(editingResourceIdInput.value);
 
                 if (!name || isNaN(price) || isNaN(xp) || price <= 0 || xp <= 0) return;
 
                 const ratio = price / xp;
 
-                resources.push({ id: Date.now(), name, price, xp, ratio });
+                if (editingId) {
+                    // Update existing resource
+                    const resourceIndex = resources.findIndex(res => res.id === editingId);
+                    if (resourceIndex > -1) {
+                        resources[resourceIndex] = { ...resources[resourceIndex], name, price, xp, ratio };
+                    }
+                } else {
+                    // Add new resource
+                    resources.push({ id: Date.now(), name, price, xp, ratio });
+                }
+
                 resources.sort((a, b) => a.ratio - b.ratio);
                 
                 saveResourcesToLocalStorage();
                 renderResources();
-                
-                form.reset();
-                resourceNameInput.focus();
+                switchToAddMode();
             });
 
             resultsContainer.addEventListener('click', (e) => {
+                const editBtn = e.target.closest('.edit-btn');
                 const deleteBtn = e.target.closest('.delete-btn');
+
+                if (editBtn) {
+                    const resourceId = parseInt(editBtn.dataset.id);
+                    const resourceToEdit = resources.find(res => res.id === resourceId);
+                    if (resourceToEdit) {
+                        editingResourceIdInput.value = resourceToEdit.id;
+                        resourceNameInput.value = resourceToEdit.name;
+                        document.getElementById('resource-price').value = resourceToEdit.price;
+                        document.getElementById('resource-xp').value = resourceToEdit.xp;
+                        
+                        formTitle.textContent = translations[currentLanguage].edit_resource_title;
+                        submitBtn.textContent = translations[currentLanguage].btn_update;
+                        
+                        form.scrollIntoView({ behavior: 'smooth' });
+                        resourceNameInput.focus();
+                    }
+                }
+
                 if (deleteBtn) {
                     const resourceId = parseInt(deleteBtn.dataset.id);
                     resources = resources.filter(res => res.id !== resourceId);
@@ -406,17 +524,34 @@
 
             // --- Rendering ---
             function renderResources() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const filteredResources = resources.filter(res => res.name.toLowerCase().includes(searchTerm));
+
                 resultsContainer.innerHTML = '';
                 resourceSelect.innerHTML = '';
+                paginationContainer.innerHTML = '';
 
                 if (resources.length === 0) {
                     resultsContainer.innerHTML = `<p id="empty-message-comparator" class="text-center text-gray-500 py-8" data-translate-key="empty_comparator">${translations[currentLanguage].empty_comparator}</p>`;
                     resourceSelect.innerHTML = `<option>${translations[currentLanguage].option_no_resource}</option>`;
                     return;
                 }
+                
+                if (filteredResources.length === 0) {
+                    resultsContainer.innerHTML = `<p class="text-center text-gray-500 py-8" data-translate-key="empty_search">${translations[currentLanguage].empty_search}</p>`;
+                    return;
+                }
 
-                resources.forEach((res, index) => {
-                    const isBest = index === 0;
+                // Pagination logic
+                const totalPages = Math.ceil(filteredResources.length / resultsPerPage);
+                const startIndex = (currentPage - 1) * resultsPerPage;
+                const endIndex = startIndex + resultsPerPage;
+                const paginatedResources = filteredResources.slice(startIndex, endIndex);
+                
+                const bestChoiceId = resources.length > 0 ? resources[0].id : null;
+
+                paginatedResources.forEach((res) => {
+                    const isBest = res.id === bestChoiceId;
                     const card = document.createElement('div');
                     card.className = `p-4 rounded-lg shadow-md flex flex-col md:flex-row items-center justify-between gap-4 transition bg-gray-800 border-2 ${isBest ? 'best-choice' : 'border-gray-700'}`;
 
@@ -440,6 +575,12 @@
                                 <p class="text-sm text-teal-300">${translations[currentLanguage].cost_per_xp}</p>
                                 <p class="text-xl font-bold text-white">${res.ratio.toFixed(2)} K</p>
                             </div>
+                            <button data-id="${res.id}" class="edit-btn bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full transition-transform transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
+                                    <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
                             <button data-id="${res.id}" class="delete-btn bg-red-600 hover:bg-red-700 text-white p-3 rounded-full transition-transform transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                             </button>
@@ -456,7 +597,51 @@
                     }
 
                     resultsContainer.appendChild(card);
+                });
+                
+                // Render pagination buttons
+                if (totalPages > 1) {
+                    // Previous button
+                    const prevBtn = document.createElement('button');
+                    prevBtn.textContent = translations[currentLanguage].pagination_prev;
+                    prevBtn.className = 'pagination-btn px-4 py-2 bg-gray-700 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed';
+                    prevBtn.disabled = currentPage === 1;
+                    prevBtn.addEventListener('click', () => {
+                        if (currentPage > 1) {
+                            currentPage--;
+                            renderResources();
+                        }
+                    });
+                    paginationContainer.appendChild(prevBtn);
 
+                    // Page number buttons
+                    for (let i = 1; i <= totalPages; i++) {
+                        const pageBtn = document.createElement('button');
+                        pageBtn.textContent = i;
+                        pageBtn.className = `pagination-btn px-4 py-2 rounded-lg ${i === currentPage ? 'active' : 'bg-gray-700'}`;
+                        pageBtn.addEventListener('click', () => {
+                            currentPage = i;
+                            renderResources();
+                        });
+                        paginationContainer.appendChild(pageBtn);
+                    }
+
+                    // Next button
+                    const nextBtn = document.createElement('button');
+                    nextBtn.textContent = translations[currentLanguage].pagination_next;
+                    nextBtn.className = 'pagination-btn px-4 py-2 bg-gray-700 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed';
+                    nextBtn.disabled = currentPage === totalPages;
+                    nextBtn.addEventListener('click', () => {
+                        if (currentPage < totalPages) {
+                            currentPage++;
+                            renderResources();
+                        }
+                    });
+                    paginationContainer.appendChild(nextBtn);
+                }
+
+                // Update resource select dropdown for calculator
+                resources.forEach(res => {
                     const option = document.createElement('option');
                     option.value = res.id;
                     option.textContent = `${res.name} (${res.ratio.toFixed(2)} K/XP)`;
@@ -505,6 +690,56 @@
                         </div>
                     </div>
                 `;
+            });
+
+            // --- CSV Export ---
+            function exportToCSV() {
+                if (resources.length === 0) {
+                    const originalText = exportBtn.textContent;
+                    exportBtn.textContent = translations[currentLanguage].error_no_export_data;
+                    exportBtn.classList.add('bg-red-600', 'cursor-not-allowed');
+                    exportBtn.classList.remove('bg-gray-600', 'hover:bg-gray-700');
+                    
+                    setTimeout(() => {
+                        exportBtn.textContent = originalText;
+                        exportBtn.classList.remove('bg-red-600', 'cursor-not-allowed');
+                        exportBtn.classList.add('bg-gray-600', 'hover:bg-gray-700');
+                    }, 2000);
+                    return;
+                }
+
+                let csvContent = "data:text/csv;charset=utf-8,";
+                const headers = [
+                    `"${translations[currentLanguage].csv_header_name}"`,
+                    `"${translations[currentLanguage].csv_header_price}"`,
+                    `"${translations[currentLanguage].csv_header_xp}"`,
+                    `"${translations[currentLanguage].csv_header_cost_per_xp}"`
+                ];
+                csvContent += headers.join(',') + '\r\n';
+
+                resources.forEach(res => {
+                    const row = [
+                        `"${res.name.replace(/"/g, '""')}"`, // Handle quotes in names
+                        res.price,
+                        res.xp,
+                        res.ratio.toFixed(2)
+                    ];
+                    csvContent += row.join(',') + '\r\n';
+                });
+
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", "dofus_pet_xp_data.csv");
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+
+            exportBtn.addEventListener('click', exportToCSV);
+            searchInput.addEventListener('input', () => {
+                currentPage = 1; // Reset to first page on new search
+                renderResources();
             });
 
             // --- Initial Load ---
