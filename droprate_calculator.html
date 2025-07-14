@@ -232,7 +232,7 @@
                     btn_back_home: "← Retour à l'accueil",
                     signature: "Apps by Ato",
                     disclaimer: "Dofus et toutes les images associées utilisées sur ce site sont la propriété d'Ankama",
-                    version_info: "Version 1.0.2 - Juillet 2025", // Updated version
+                    version_info: "Version 1.0.4 - Juillet 2025", // Updated version
                     drop_calculator_main_title: "Calculateur de Taux de Butin",
                     drop_calculator_subtitle: "Estimez vos chances d'obtenir des objets !",
                     drop_calculator_form_title: "Calculer le Taux de Butin",
@@ -258,7 +258,7 @@
                     btn_back_home: "← Back to Home",
                     signature: "Apps by Ato",
                     disclaimer: "Dofus and any related images used on this website are the properties of Ankama",
-                    version_info: "Version 1.0.2 - July 2025", // Updated version
+                    version_info: "Version 1.0.4 - July 2025", // Updated version
                     drop_calculator_main_title: "Drop Rate Calculator",
                     drop_calculator_subtitle: "Estimate your chances of obtaining items!",
                     drop_calculator_form_title: "Calculate Drop Rate",
@@ -284,7 +284,7 @@
                     btn_back_home: "← Volver al Inicio",
                     signature: "Apps by Ato",
                     disclaimer: "Dofus y cualquier imagen relacionada utilizada en este sitio web son propiedad de Ankama",
-                    version_info: "Versión 1.0.2 - Julio 2025", // Updated version
+                    version_info: "Versión 1.0.4 - Julio 2025", // Updated version
                     drop_calculator_main_title: "Calculadora de Tasa de Drop",
                     drop_calculator_subtitle: "¡Estima tus posibilidades de conseguir objetos!",
                     drop_calculator_form_title: "Calcular Tasa de Drop",
@@ -310,7 +310,7 @@
                     btn_back_home: "← Voltar ao Início",
                     signature: "Apps by Ato",
                     disclaimer: "Dofus e quaisquer imagens relacionadas usadas neste site são propriedade da Ankama",
-                    version_info: "Versão 1.0.2 - Julho 2025", // Updated version
+                    version_info: "Versão 1.0.4 - Julho 2025", // Updated version
                     drop_calculator_main_title: "Calculadora Taxa de Drop",
                     drop_calculator_subtitle: "Estime suas chances de obter itens!",
                     drop_calculator_form_title: "Calcular Taxa de Drop",
@@ -336,7 +336,7 @@
                     btn_back_home: "← Torna alla Home",
                     signature: "Apps by Ato",
                     disclaimer: "Dofus e qualsiasi immagine correlata utilizzata su questo sito Web è di proprietà di Ankama",
-                    version_info: "Versione 1.0.2 - Luglio 2025", // Updated version
+                    version_info: "Versione 1.0.4 - Luglio 2025", // Updated version
                     drop_calculator_main_title: "Calcolatore Tasso di Drop",
                     drop_calculator_subtitle: "Stima le tue possibilità di ottenere oggetti!",
                     drop_calculator_form_title: "Calcola Tasso di Drop",
@@ -412,14 +412,12 @@
                 autocompleteSuggestions.classList.remove('hidden');
 
                 try {
-                    const params = new URLSearchParams();
-                    // The DofusDB API (FeathersJS) uses a specific syntax for $like.
-                    // Special characters in the search term itself (like 'é', 'à', etc.) need to be handled by URLSearchParams.
-                    // The '$like' operator itself should be part of the parameter name.
-                    params.append('nom[$like]', `%${searchTerm}%`);
-                    params.append('_limit', '10');
+                    // Manually construct the query string for $like to avoid over-encoding
+                    // Encode only the search term. The DofusDB API expects 'nom[$like]=%TERM%'
+                    const encodedSearchTerm = encodeURIComponent(searchTerm);
+                    const queryString = `nom[$like]=%${encodedSearchTerm}%&_limit=10`;
 
-                    const response = await fetch(`${DOFUSDB_API_BASE_URL}/items?${params.toString()}`);
+                    const response = await fetch(`${DOFUSDB_API_BASE_URL}/items?${queryString}`);
                     if (!response.ok) {
                         // Log the full URL for debugging purposes
                         console.error(`API request failed with status ${response.status}. URL: ${response.url}`);
