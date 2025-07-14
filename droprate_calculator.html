@@ -19,7 +19,8 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: url('images/BG_01.jpg');
+            /* Placeholder for background image. Replace with a valid URL if you have one, or remove if not needed. */
+            background-image: url('https://placehold.co/1920x1080/111827/ffffff?text=Background');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -50,6 +51,11 @@
             background-color: rgba(20, 184, 166, 0.1); /* Teal-500 avec opacité */
             color: #14b8a6; /* text-teal-500 */
             border-left: 4px solid #14b8a6; /* border-teal-500 */
+        }
+        .message-box.info {
+            background-color: rgba(59, 130, 246, 0.1); /* Blue-500 with opacity */
+            color: #3b82f6; /* text-blue-500 */
+            border-left: 4px solid #3b82f6; /* border-blue-500 */
         }
 
         /* Styles pour l'autocomplétion */
@@ -83,6 +89,42 @@
             object-fit: contain;
             border-radius: 0.25rem;
             background-color: rgba(255, 255, 255, 0.05); /* subtle background for image */
+        }
+
+        /* Styles for monster drop suggestions */
+        .monster-drop-suggestions {
+            position: relative; /* Changed to relative to contain children */
+            background-color: rgba(31, 41, 55, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            margin-top: 1rem;
+        }
+        .monster-drop-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+            border-radius: 0.375rem;
+            transition: background-color 0.2s ease;
+        }
+        .monster-drop-item:hover {
+            background-color: rgba(20, 184, 166, 0.2);
+        }
+        .monster-drop-item img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+            border-radius: 0.25rem;
+        }
+        .monster-drop-item span {
+            flex-grow: 1;
+            color: #e2e8f0; /* text-gray-200 */
+        }
+        .monster-drop-item .drop-rate {
+            font-weight: 600;
+            color: #4fd1c5; /* teal-300 */
         }
     </style>
 </head>
@@ -122,6 +164,14 @@
                         <div id="autocompleteSuggestions" class="autocomplete-suggestions hidden"></div>
                     </div>
 
+                    <!-- New section for monster drop suggestions -->
+                    <div id="monsterDropSuggestions" class="monster-drop-suggestions hidden">
+                        <p class="text-gray-400 text-sm mb-2" data-translate-key="label_select_monster_drop">Sélectionnez un monstre pour pré-remplir le taux de butin :</p>
+                        <div id="monsterDropList" class="space-y-1">
+                            <!-- Monster drop items will be inserted here -->
+                        </div>
+                    </div>
+
                     <div class="mb-4">
                         <label for="dropBaseDropRate" class="block text-sm font-medium text-gray-300 mb-1" data-translate-key="label_base_drop_rate">Taux de butin de base (%) (Ex: 8.4 pour Casque Cassé du Chafer):</label>
                         <input type="number" id="dropBaseDropRate" value="8.4" min="0.1" step="0.1" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition placeholder-custom">
@@ -159,11 +209,15 @@
                     <div id="drop-error-message" class="message-box error hidden">
                         <!-- Les messages d'erreur seront affichés ici -->
                     </div>
+                    <div id="drop-info-message" class="message-box info hidden">
+                        <!-- Information messages (e.g., loading) will be displayed here -->
+                    </div>
                 </div>
             </div>
             
             <footer class="text-center text-gray-500 text-sm mt-auto pt-12 pb-4">
-                <img src="images/LogoDofus.webp" alt="Logo Dofus" class="h-12 mx-auto mb-2 opacity-50">
+                <!-- Placeholder for Dofus Logo. Replace with a valid URL if you have one, or remove if not needed. -->
+                <img src="https://placehold.co/48x48/111827/9ca3af?text=Dofus" alt="Logo Dofus" class="h-12 mx-auto mb-2 opacity-50">
                 <p data-translate-key="signature">Apps by Ato</p>
                 <p class="text-xs text-gray-600 mt-4" data-translate-key="disclaimer">Dofus and any related images used on this website are the properties of Ankama</p>
             </footer>
@@ -187,15 +241,16 @@
                     label_anomaly_bonus: "% Anomalie (0-120%):",
                     label_ankama_shield: "Activer Ankama Shield (+5% bonus)",
                     btn_calculate_drop_rate: "Calculer le Taux de Butin",
-                    btn_search_item: "Rechercher", // This button is now removed from HTML, but kept in translations for consistency if needed elsewhere.
                     drop_result_prefix: "Pour l'objet",
                     drop_estimated_rate: "Taux de butin estimé",
                     drop_average_combats: "Vous avez 1 chance sur",
                     drop_error_message: "Veuillez entrer des valeurs numériques valides pour le taux de base, la prospection (min 100), le bonus de défi (min 0) et le bonus d'anomalie (entre 0 et 120).",
                     drop_error_item_name: "Veuillez entrer un nom pour l'objet.",
-                    item_not_found: "Objet non trouvé. Veuillez vérifier le nom ou entrer le taux de base manuellement.",
+                    item_not_found: "Objet non trouvé.",
                     fetching_data: "Recherche en cours...",
-                    no_base_drop_rate: "Le taux de butin de base n'est pas disponible pour cet objet dans la base de données. Veuillez l'entrer manuellement."
+                    no_base_drop_rate: "Aucun taux de butin de base trouvé pour cet objet via les monstres. Veuillez l'entrer manuellement.",
+                    label_select_monster_drop: "Sélectionnez un monstre pour pré-remplir le taux de butin :",
+                    no_monster_drops: "Aucun monstre ne semble laisser tomber cet objet, ou les données ne sont pas disponibles."
                 },
                 en: {
                     btn_back_home: "← Back to Home",
@@ -211,15 +266,16 @@
                     label_anomaly_bonus: "Anomaly % (0-120%):",
                     label_ankama_shield: "Activate Ankama Shield (+5% bonus)",
                     btn_calculate_drop_rate: "Calculate Drop Rate",
-                    btn_search_item: "Search",
                     drop_result_prefix: "For the item",
                     drop_estimated_rate: "Estimated drop rate",
                     drop_average_combats: "You have 1 chance in",
                     drop_error_message: "Please enter valid numeric values for base rate, prospecting (min 100), challenge bonus (min 0), and anomaly bonus (between 0 and 120).",
                     drop_error_item_name: "Please enter an item name.",
-                    item_not_found: "Item not found. Please check the name or enter the base rate manually.",
+                    item_not_found: "Item not found.",
                     fetching_data: "Searching...",
-                    no_base_drop_rate: "Base drop rate is not available for this item in the database. Please enter it manually."
+                    no_base_drop_rate: "No base drop rate found for this item via monsters. Please enter it manually.",
+                    label_select_monster_drop: "Select a monster to pre-fill the drop rate:",
+                    no_monster_drops: "No monsters seem to drop this item, or data is unavailable."
                 },
                 es: {
                     btn_back_home: "← Volver al Inicio",
@@ -235,15 +291,16 @@
                     label_anomaly_bonus: "% Anomalía (0-120%):",
                     label_ankama_shield: "Activar Ankama Shield (+5% bonus)",
                     btn_calculate_drop_rate: "Calcular Tasa de Drop",
-                    btn_search_item: "Buscar",
                     drop_result_prefix: "Para el objeto",
                     drop_estimated_rate: "Tasa de drop estimada",
                     drop_average_combats: "Tienes 1 oportunidad entre",
                     drop_error_message: "Por favor, introduce valores numéricos válidos para la tasa base, la prospección (mín. 100), el bono de desafío (mín. 0) y el bono de anomalía (entre 0 y 120).",
                     drop_error_item_name: "Por favor, introduce un nombre para el objeto.",
-                    item_not_found: "Objeto no encontrado. Por favor, verifica el nombre o introduce la tasa base manualmente.",
+                    item_not_found: "Objeto no encontrado.",
                     fetching_data: "Buscando...",
-                    no_base_drop_rate: "La tasa de drop base no está disponible para este objeto en la base de datos. Por favor, introdúcela manualmente."
+                    no_base_drop_rate: "No se encontró una tasa de drop base para este objeto a través de monstruos. Por favor, introdúcela manualmente.",
+                    label_select_monster_drop: "Selecciona un monstruo para rellenar la tasa de drop:",
+                    no_monster_drops: "Ningún monstruo parece soltar este objeto, o los datos no están disponibles."
                 },
                 'pt-br': {
                     btn_back_home: "← Voltar ao Início",
@@ -259,15 +316,16 @@
                     label_anomaly_bonus: "% Anomalia (0-120%):",
                     label_ankama_shield: "Ativar Ankama Shield (+5% bônus)",
                     btn_calculate_drop_rate: "Calcular Taxa de Drop",
-                    btn_search_item: "Pesquisar",
                     drop_result_prefix: "Para o item",
                     drop_estimated_rate: "Taxa de drop estimada",
                     drop_average_combats: "Você tem 1 chance em",
                     drop_error_message: "Por favor, insira valores numéricos válidos para a taxa base, prospecção (mín. 100), bônus de desafio (mín. 0) e bônus de anomalia (entre 0 e 120).",
                     drop_error_item_name: "Por favor, insira um nome para o item.",
-                    item_not_found: "Item não encontrado. Por favor, verifique o nome ou insira a taxa base manualmente.",
+                    item_not_found: "Item não encontrado.",
                     fetching_data: "Pesquisando...",
-                    no_base_drop_rate: "A taxa de drop base não está disponível para este item no banco de dados. Por favor, insira-a manualmente."
+                    no_base_drop_rate: "Nenhuma taxa de drop base encontrada para este item via monstros. Por favor, insira-a manualmente.",
+                    label_select_monster_drop: "Selecione um monstro para preencher a taxa de drop:",
+                    no_monster_drops: "Nenhum monstro parece dropar este item, ou os dados não estão disponíveis."
                 },
                 it: {
                     btn_back_home: "← Torna alla Home",
@@ -283,15 +341,16 @@
                     label_anomaly_bonus: "% Anomalia (0-120%):",
                     label_ankama_shield: "Attiva Ankama Shield (+5% bonus)",
                     btn_calculate_drop_rate: "Calcola Tasso di Drop",
-                    btn_search_item: "Cerca",
                     drop_result_prefix: "Per l'oggetto",
                     drop_estimated_rate: "Tasso di drop stimato",
                     drop_average_combats: "Hai 1 possibilità su",
                     drop_error_message: "Inserisci valori numerici validi per il tasso base, la prospezione (min 100), il bonus di sfida (min 0) e il bonus di anomalia (tra 0 e 120).",
                     drop_error_item_name: "Inserisci un nome per l'oggetto.",
-                    item_not_found: "Oggetto non trovato. Per favore, controlla il nome o inserisci il tasso base manualmente.",
+                    item_not_found: "Oggetto non trovato.",
                     fetching_data: "Ricerca in corso...",
-                    no_base_drop_rate: "Il tasso di drop base non è disponibile per questo oggetto nel database. Inseriscilo manualmente."
+                    no_base_drop_rate: "Nessun tasso di drop base trovato per questo oggetto tramite i mostri. Inseriscilo manualmente.",
+                    label_select_monster_drop: "Seleziona un mostro per precompilare il tasso di drop:",
+                    no_monster_drops: "Nessun mostro sembra rilasciare questo oggetto, o i dati non sono disponibili."
                 }
             };
 
@@ -304,40 +363,146 @@
             const ankamaShieldToggle = document.getElementById('ankamaShieldToggle');
             const dropResultDiv = document.getElementById('drop-result');
             const dropErrorDiv = document.getElementById('drop-error-message');
+            const dropInfoDiv = document.getElementById('drop-info-message'); // New info message div
             const languageSelector = document.getElementById('language-selector');
-            const itemIcon = document.getElementById('itemIcon'); // New element for the icon
-            const autocompleteSuggestions = document.getElementById('autocompleteSuggestions'); // New element for suggestions
+            const itemIcon = document.getElementById('itemIcon');
+            const autocompleteSuggestions = document.getElementById('autocompleteSuggestions');
+            const monsterDropSuggestions = document.getElementById('monsterDropSuggestions'); // New monster drop section
+            const monsterDropList = document.getElementById('monsterDropList'); // List within monster drop section
 
             let currentLanguage = 'fr';
-            let allDofusItems = []; // To store fetched items
+            let selectedItem = null; // To store the currently selected item object from API
 
-            // Function to fetch Dofus items from local JSON
-            async function fetchDofusItems() {
-                dropErrorDiv.innerHTML = `<p>${translations[currentLanguage].fetching_data}</p>`;
-                dropErrorDiv.classList.remove('hidden');
+            const DOFUSDB_API_BASE_URL = 'https://api.dofusdb.fr';
+
+            // Utility function to display messages
+            function showMessage(element, message, type) {
+                element.innerHTML = `<p>${message}</p>`;
+                element.className = `message-box ${type}`;
+                element.classList.remove('hidden');
+            }
+
+            function hideMessage(element) {
+                element.classList.add('hidden');
+                element.innerHTML = '';
+            }
+
+            // Function to fetch Dofus items from API for autocomplete
+            async function fetchItemsForAutocomplete(searchTerm) {
+                hideMessage(dropErrorDiv);
+                hideMessage(dropResultDiv);
+                hideMessage(monsterDropSuggestions); // Hide monster suggestions when typing
+                dropBaseDropRateInput.removeAttribute('disabled'); // Enable manual input
+
+                if (searchTerm.length < 3) {
+                    autocompleteSuggestions.classList.add('hidden');
+                    autocompleteSuggestions.innerHTML = '';
+                    return;
+                }
+
+                showMessage(dropInfoDiv, translations[currentLanguage].fetching_data, 'info');
+                autocompleteSuggestions.innerHTML = ''; // Clear previous suggestions
+                autocompleteSuggestions.classList.remove('hidden');
+
                 try {
-                    const response = await fetch('ressources.json');
+                    // Using $like for partial matching, case-insensitive
+                    const response = await fetch(`${DOFUSDB_API_BASE_URL}/items?nom[$like]=%${encodeURIComponent(searchTerm)}%&_limit=10`);
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
-                    allDofusItems = await response.json();
-                    console.log("Dofus items loaded from ressources.json:", allDofusItems);
+                    const items = await response.json();
+                    hideMessage(dropInfoDiv);
 
-                    // Attempt to set initial icon for the default item
-                    const defaultItemName = dropItemNameInput.value.trim().toLowerCase();
-                    const defaultItem = allDofusItems.find(item => item.nom.toLowerCase() === defaultItemName);
-                    if (defaultItem && defaultItem.illustration_url) {
-                        itemIcon.src = defaultItem.illustration_url;
+                    if (items.length > 0) {
+                        items.forEach(item => {
+                            const suggestionDiv = document.createElement('div');
+                            suggestionDiv.classList.add('autocomplete-suggestion-item');
+                            suggestionDiv.innerHTML = `
+                                <img src="${item.illustration_url || 'https://placehold.co/32x32/1f2937/9ca3af?text=?'}" alt="Icône de ${item.nom}">
+                                <span>${item.nom}</span>
+                            `;
+                            suggestionDiv.addEventListener('click', () => {
+                                selectItem(item);
+                                autocompleteSuggestions.classList.add('hidden');
+                            });
+                            autocompleteSuggestions.appendChild(suggestionDiv);
+                        });
                     } else {
-                        itemIcon.src = "https://placehold.co/32x32/1f2937/9ca3af?text=?"; // Fallback
+                        autocompleteSuggestions.classList.add('hidden');
+                        showMessage(dropErrorDiv, translations[currentLanguage].item_not_found, 'error');
                     }
-                    dropErrorDiv.classList.add('hidden'); // Hide fetching message on success
-                    dropErrorDiv.innerHTML = ''; // Clear fetching message
-
                 } catch (error) {
-                    console.error("Could not load ressources.json:", error);
-                    dropErrorDiv.innerHTML = `<p>${translations[currentLanguage].drop_error_message}</p>`;
-                    dropErrorDiv.classList.remove('hidden');
+                    console.error("Error fetching items:", error);
+                    hideMessage(dropInfoDiv);
+                    showMessage(dropErrorDiv, translations[currentLanguage].item_not_found, 'error');
+                    autocompleteSuggestions.classList.add('hidden');
+                }
+            }
+
+            // Function to handle item selection from autocomplete
+            async function selectItem(item) {
+                selectedItem = item;
+                dropItemNameInput.value = item.nom;
+                itemIcon.src = item.illustration_url || "https://placehold.co/32x32/1f2937/9ca3af?text=?";
+                hideMessage(dropErrorDiv);
+                hideMessage(dropResultDiv);
+                dropBaseDropRateInput.value = ''; // Clear base drop rate
+                dropBaseDropRateInput.removeAttribute('disabled'); // Ensure it's enabled for manual input initially
+
+                // Display monster drop options if available
+                if (selectedItem.dropGroups && selectedItem.dropGroups.length > 0) {
+                    await displayMonsterDropOptions(selectedItem.dropGroups);
+                } else {
+                    hideMessage(monsterDropSuggestions);
+                    monsterDropList.innerHTML = '';
+                    showMessage(dropInfoDiv, translations[currentLanguage].no_monster_drops, 'info');
+                }
+            }
+
+            // Function to display monster drop options
+            async function displayMonsterDropOptions(dropGroups) {
+                monsterDropList.innerHTML = '';
+                hideMessage(dropInfoDiv); // Hide any previous info messages
+                monsterDropSuggestions.classList.remove('hidden');
+
+                const monsterPromises = dropGroups.map(async (group) => {
+                    if (group.monsterId) {
+                        try {
+                            const response = await fetch(`${DOFUSDB_API_BASE_URL}/monsters/${group.monsterId}`);
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            const monster = await response.json();
+                            return { monster, rate: group.rate };
+                        } catch (error) {
+                            console.error(`Error fetching monster ${group.monsterId}:`, error);
+                            return null; // Return null for failed fetches
+                        }
+                    }
+                    return null;
+                });
+
+                const monsterDrops = (await Promise.all(monsterPromises)).filter(Boolean); // Filter out nulls
+
+                if (monsterDrops.length > 0) {
+                    monsterDrops.forEach(({ monster, rate }) => {
+                        const monsterDropDiv = document.createElement('div');
+                        monsterDropDiv.classList.add('monster-drop-item');
+                        monsterDropDiv.innerHTML = `
+                            <img src="${monster.illustration_url || 'https://placehold.co/28x28/1f2937/9ca3af?text=?'}" alt="Icône de ${monster.nom}">
+                            <span>${monster.nom}</span>
+                            <span class="drop-rate">${rate}%</span>
+                        `;
+                        monsterDropDiv.addEventListener('click', () => {
+                            dropBaseDropRateInput.value = rate;
+                            dropBaseDropRateInput.setAttribute('disabled', 'true'); // Disable input after selection
+                            hideMessage(monsterDropSuggestions); // Hide monster suggestions after selection
+                        });
+                        monsterDropList.appendChild(monsterDropDiv);
+                    });
+                } else {
+                    showMessage(dropInfoDiv, translations[currentLanguage].no_monster_drops, 'info');
+                    hideMessage(monsterDropSuggestions);
                 }
             }
             
@@ -355,84 +520,23 @@
                     }
                 });
 
+                // For placeholders, use data-translate-key-placeholder
                 document.querySelectorAll('[data-translate-key-placeholder]').forEach(element => {
                     const key = element.getAttribute('data-translate-key-placeholder');
                     if (translations[lang] && translations[lang][key]) {
                         element.placeholder = translations[lang][key];
                     }
                 });
-                dropResultDiv.classList.add('hidden');
-                dropErrorDiv.classList.add('hidden');
+                hideMessage(dropResultDiv);
+                hideMessage(dropErrorDiv);
+                hideMessage(dropInfoDiv);
             }
 
-            // Function to handle item search and autocomplete
-            function handleItemSearch() {
-                const searchTerm = dropItemNameInput.value.trim().toLowerCase();
-                autocompleteSuggestions.innerHTML = ''; // Clear previous suggestions
-                autocompleteSuggestions.classList.add('hidden'); // Hide suggestions by default
-
-                // Clear any previous item not found error when user starts typing again
-                if (dropErrorDiv.textContent.includes(translations[currentLanguage].item_not_found)) {
-                    dropErrorDiv.classList.add('hidden');
-                    dropErrorDiv.innerHTML = '';
-                }
-
-                if (searchTerm.length >= 3) { // Start search after 3 characters
-                    // Filter items, ensuring 'item' and 'item.nom' are not undefined
-                    const filteredItems = allDofusItems.filter(item => 
-                        item && item.nom && item.nom.toLowerCase().includes(searchTerm)
-                    ).slice(0, 10); // Limit to top 10 suggestions
-
-                    if (filteredItems.length > 0) {
-                        filteredItems.forEach(item => {
-                            const suggestionDiv = document.createElement('div');
-                            suggestionDiv.classList.add('autocomplete-suggestion-item');
-                            suggestionDiv.innerHTML = `
-                                <img src="${item.illustration_url || 'https://placehold.co/32x32/1f2937/9ca3af?text=?'}" alt="Icône de ${item.nom}">
-                                <span>${item.nom}</span>
-                            `;
-                            suggestionDiv.addEventListener('click', () => {
-                                dropItemNameInput.value = item.nom;
-                                itemIcon.src = item.illustration_url || "https://placehold.co/32x32/1f2937/9ca3af?text=?";
-                                // IMPORTANT: ressources.json does NOT contain baseDropRate.
-                                // If you want to populate this, you need to add baseDropRate to your ressources.json
-                                // For now, we'll just show a message if it's not present.
-                                if (item.baseDropRate !== undefined) {
-                                    dropBaseDropRateInput.value = item.baseDropRate;
-                                    dropErrorDiv.classList.add('hidden'); // Clear error if item found
-                                } else {
-                                    dropBaseDropRateInput.value = ''; // Clear previous value
-                                    dropErrorDiv.innerHTML = `<p>${translations[currentLanguage].no_base_drop_rate}</p>`;
-                                    dropErrorDiv.classList.remove('hidden');
-                                }
-                                autocompleteSuggestions.classList.add('hidden');
-                            });
-                            autocompleteSuggestions.appendChild(suggestionDiv);
-                        });
-                        autocompleteSuggestions.classList.remove('hidden');
-                    } else {
-                        // Display item not found only if no suggestions after 3 chars
-                        dropErrorDiv.innerHTML = `<p>${translations[currentLanguage].item_not_found}</p>`;
-                        dropErrorDiv.classList.remove('hidden');
-                    }
-                } else {
-                    dropErrorDiv.classList.add('hidden'); // Hide error if less than 3 chars
-                }
-            }
-
-            // Hide suggestions when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!dropItemNameInput.contains(e.target) && !autocompleteSuggestions.contains(e.target)) {
-                    autocompleteSuggestions.classList.add('hidden');
-                }
-            });
-            
             // Drop Rate Calculator Logic
             window.calculateDropRate = function() {
-                dropResultDiv.classList.add('hidden');
-                dropErrorDiv.classList.add('hidden');
-                dropResultDiv.innerHTML = '';
-                dropErrorDiv.innerHTML = '';
+                hideMessage(dropResultDiv);
+                hideMessage(dropErrorDiv);
+                hideMessage(dropInfoDiv);
 
                 const itemName = dropItemNameInput.value.trim();
                 const baseDropRate = parseFloat(dropBaseDropRateInput.value);
@@ -442,24 +546,23 @@
                 const isAnkamaShieldActive = ankamaShieldToggle.checked;
 
                 if (isNaN(baseDropRate) || isNaN(playerPP) || isNaN(challengeBonus) || isNaN(anomalyBonus) || baseDropRate <= 0 || playerPP < 100 || anomalyBonus < 0 || anomalyBonus > 120) {
-                    dropErrorDiv.innerHTML = `<p>${translations[currentLanguage].drop_error_message}</p>`;
-                    dropErrorDiv.classList.remove('hidden');
+                    showMessage(dropErrorDiv, translations[currentLanguage].drop_error_message, 'error');
                     return;
                 }
 
                 if (itemName === "") {
-                    dropErrorDiv.innerHTML = `<p>${translations[currentLanguage].drop_error_item_name}</p>`;
-                    dropErrorDiv.classList.remove('hidden');
+                    showMessage(dropErrorDiv, translations[currentLanguage].drop_error_item_name, 'error');
                     return;
                 }
 
+                // PP Multiplier formula based on Dofus mechanics (simplified)
                 let ppMultiplier;
-                if (playerPP < 0) {
+                if (playerPP < 0) { // Should not happen with min="100" but as a safeguard
                     ppMultiplier = 1;
                 } else {
                     const exponent = (250 - playerPP) / 85;
                     ppMultiplier = 0.74 + (1.755 / (1 + Math.exp(exponent)));
-                    ppMultiplier = Math.min(ppMultiplier, 2.5);
+                    ppMultiplier = Math.min(ppMultiplier, 2.5); // Cap at 2.5 (250% of base)
                 }
 
                 let effectiveDropRate = baseDropRate * ppMultiplier * (1 + challengeBonus / 100);
@@ -469,14 +572,14 @@
                 }
 
                 if (isAnkamaShieldActive) {
-                    effectiveDropRate *= (1 + 5 / 100);
+                    effectiveDropRate *= (1 + 5 / 100); // +5% bonus from Ankama Shield
                 }
 
                 let chanceDenominator = 0;
                 if (effectiveDropRate > 0) {
                     chanceDenominator = 100 / effectiveDropRate;
                 } else {
-                    chanceDenominator = Infinity;
+                    chanceDenominator = Infinity; // Avoid division by zero
                 }
 
                 dropResultDiv.innerHTML = `
@@ -491,15 +594,34 @@
 
             // Event Listeners
             languageSelector.addEventListener('change', (e) => setLanguage(e.target.value));
-            dropItemNameInput.addEventListener('input', handleItemSearch);
+            
+            // Debounce function for autocomplete to limit API calls
+            let debounceTimer;
+            dropItemNameInput.addEventListener('input', () => {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    fetchItemsForAutocomplete(dropItemNameInput.value);
+                }, 300); // 300ms delay
+            });
+
+            // Hide suggestions when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!dropItemNameInput.contains(e.target) && !autocompleteSuggestions.contains(e.target)) {
+                    autocompleteSuggestions.classList.add('hidden');
+                }
+                // Keep monster suggestions visible until an option is chosen or item name is cleared
+            });
 
             // Initial Load
             const savedLang = localStorage.getItem('dofusDropLang') || 'fr';
             setLanguage(savedLang);
-            fetchDofusItems(); // Load items when the page loads
+
+            // Perform initial search for the default item on page load
+            if (dropItemNameInput.value) {
+                fetchItemsForAutocomplete(dropItemNameInput.value);
+            }
         });
     </script>
 
 </body>
 </html>
- 
