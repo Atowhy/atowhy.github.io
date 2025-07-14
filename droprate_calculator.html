@@ -19,8 +19,8 @@
             left: 0;
             right: 0;
             bottom: 0;
-            /* Background image from user's request */
-            background-image: url('BG_02.jpg'); /* Updated background image */
+            /* Background image from user's request, corrected path */
+            background-image: url('images/BG_02.jpg'); /* Corrected path */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -255,11 +255,11 @@
             </div>
             
             <footer class="text-center text-gray-500 text-sm mt-auto pt-12 pb-4">
-                <!-- Image of Dofus Logo -->
-                <img src="LogoDofus.png" alt="Logo Dofus" class="h-12 mx-auto mb-2 opacity-50">
+                <!-- Image of Dofus Logo, corrected path -->
+                <img src="images/LogoDofus.png" alt="Logo Dofus" class="h-12 mx-auto mb-2 opacity-50">
                 <p>Apps by Ato</p>
                 <p class="text-xs text-gray-600 mt-4">Dofus et toutes les images associées utilisées sur ce site sont la propriété d'Ankama</p>
-                <p class="text-xs text-gray-600 mt-2">Version 2.0.22 - Juillet 2025</p>
+                <p class="text-xs text-gray-600 mt-2">Version 2.0.23 - Juillet 2025</p>
             </footer>
         </div>
     </div>
@@ -300,7 +300,9 @@
                 drop_error_item_name: "Veuillez entrer un nom pour l'objet.",
                 item_not_found: "Objet non trouvé.",
                 fetching_data: "Recherche en cours...",
-                no_base_drop_rate: "Aucun monstre ne semble laisser tomber cet objet, ou les données ne sont pas disponibles."
+                no_base_drop_rate: "Aucun taux de butin de base trouvé pour cet objet via les monstres. Veuillez l'entrer manuellement.",
+                label_select_monster_drop: "Sélectionnez un monstre pour pré-remplir le taux de butin :",
+                no_monster_drops: "Cet objet ne semble pas être droppable par des monstres, ou les données de drop ne sont pas disponibles dans la base de données." // Updated message
             }
             // Removed other languages as per user request
         };
@@ -509,7 +511,7 @@
                         }
                     }));
                 } else {
-                    showMessage(dropInfoDiv, translations[currentLanguage].no_monster_drops, 'info');
+                    showMessage(dropInfoDiv, translations[currentLanguage].no_monster_drops, 'info'); // Updated message
                     setMonsterSuggestionsVisibility(false);
                     return;
                 }
@@ -573,7 +575,7 @@
                     setMonsterSuggestionsVisibility(true);
                     console.log("Nombre d'enfants de monsterDropList:", monsterDropList.children.length);
                 } else {
-                    showMessage(dropInfoDiv, translations[currentLanguage].no_monster_drops, 'info');
+                    showMessage(dropInfoDiv, translations[currentLanguage].no_monster_drops, 'info'); // Updated message
                     setMonsterSuggestionsVisibility(false);
                 }
             }
@@ -689,7 +691,6 @@
             });
 
             // Chargement initial
-            // La langue est maintenant fixée à 'fr'
             setLanguage('fr'); // Appeler setLanguage pour initialiser les textes
 
             if (versionInfoElement) {
