@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculateur de Taux de Butin Dofus</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
+       .container { max-width: 600px; margin: auto; padding: 25px; border: 1px solid #ddd; border-radius: 10px; background-color: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; text-align: center; margin-bottom: 20px; }
+        p { line-height: 1.6; }
+        label, input, button { display: block; margin-bottom: 12px; }
+        input[type="number"], input[type="text"] { width: calc(100% - 24px); padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
+        button { padding: 12px 20px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; transition: background-color 0.3s ease; }
+        button:hover { background-color: #2980b9; }
+        #result { margin-top: 25px; padding: 15px; background-color: #e8f4f8; border-left: 5px solid #3498db; border-radius: 5px; }
+        #result ul { list-style-type: none; padding: 0; }
+        #result li { margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculateur de Taux de Butin Dofus (Simplifié)</h1>
+        <p>Cet outil estime le taux de butin pour un objet en fonction de votre Prospection (PP) et d'un bonus de défi.</p>
+
+        <label for="itemName">Nom de l'objet (Ex: Corne de Bouftou):</label>
+        <input type="text" id="itemName" value="Corne de Bouftou">
+
+        <label for="baseDropRate">Taux de butin de base (%) (Ex: 5 pour Corne de Bouftou):</label>
+        <input type="number" id="baseDropRate" value="5" min="0.1" step="0.1">
+
+        <label for="playerPP">Votre Prospection (PP):</label>
+        <input type="number" id="playerPP" value="200" min="100">
+
+        <label for="challengeBonus">Bonus de défi (%) (Ex: 50 pour un défi réussi):</label>
+        <input type="number" id="challengeBonus" value="50" min="0" step="1">
+
+        <button onclick="calculateDropRate()">Calculer le Taux de Butin</button>
+
+        <div id="result">
+            <p>Le taux de butin estimé sera affiché ici.</p>
+        </div>
+    </div>
+
+    <script>
+        async function calculateDropRate() {
+            const itemName = document.getElementById('itemName').value;
+            const baseDropRate = parseFloat(document.getElementById('baseDropRate').value);
+            const playerPP = parseFloat(document.getElementById('playerPP').value);
+            const challengeBonus = parseFloat(document.getElementById('challengeBonus').value);
+            const resultDiv = document.getElementById('result');
+
+            if (isNaN(baseDropRate) |
+
+| isNaN(playerPP) |
+| isNaN(challengeBonus) |
+| baseDropRate <= 0 |
+| playerPP < 100) {
+                resultDiv.innerHTML = "<p style='color: red;'>Veuillez entrer des valeurs valides pour le taux de base, la prospection et le bonus de défi.</p>";
+                return;
+            }
+
+            // Formule simplifiée : Taux de Base * (PP / 100) * (1 + Bonus Défi / 100)
+            // La prospection est un multiplicateur du taux de butin de base.[1]
+            // Les défis peuvent ajouter un pourcentage à la prospection effective.[2]
+            const effectiveDropRate = baseDropRate * (playerPP / 100) * (1 + challengeBonus / 100);
+
+            resultDiv.innerHTML = `
+                <p>Pour l'objet "<strong>${itemName}</strong>" :</p>
+                <ul>
+                    <li>Taux de butin de base : ${baseDropRate}%</li>
+                    <li>Votre Prospection (PP) : ${playerPP}</li>
+                    <li>Bonus de défi : ${challengeBonus}%</li>
+                    <li><strong>Taux de butin estimé : ${effectiveDropRate.toFixed(2)}%</strong></li>
+                </ul>
+                <p><em>Note : Ce calcul est une simplification basée sur les mécaniques générales de Dofus PC. Les mécaniques exactes peuvent varier (ex: seuils de prospection, butin par personnage vs par groupe dans Dofus Touch).</em></p>
+            `;
+
+            // --- Comment intégrer Dofapi ici (explication) ---
+            // Dans un outil plus avancé, au lieu de demander le "Taux de butin de base",
+            // nous pourrions le récupérer automatiquement via l'API Dofapi.
+            // Par exemple, si Dofapi avait un endpoint pour les ressources par nom ou ID :
+            /*
+            const dofapiBaseUrl = 'https://dofapi.fr/api'; // URL de base de Dofapi [4]
+            const itemId = 'ID_DE_LA_CORNE_DE_BOUFTOU'; // Cet ID devrait être trouvé via une recherche ou une base de données locale
+
+            try {
+                const response = await fetch(`${dofapiBaseUrl}/resources/${itemId}`); // Endpoint hypothétique pour une ressource [4]
+                if (!response.ok) {
+                    throw new Error(`Erreur de l'API Dofapi: ${response.status}`);
+                }
+                const itemData = await response.json();
+                // Si l'API retournait un champ 'baseDropRate', nous l'utiliserions ici:
+                // const actualBaseDropRate = itemData.baseDropRate;
+                //... puis utiliser actualBaseDropRate dans le calcul.
+                console.log("Données de l'objet récupérées via Dofapi:", itemData);
+            } catch (error) {
+                console.error("Erreur lors de la récupération des données de l'API Dofapi:", error);
+                // Afficher un message à l'utilisateur si l'API ne fonctionne pas
+            }
+            */
+        }
+    </script>
+</body>
+</html>
