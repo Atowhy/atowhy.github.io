@@ -232,7 +232,7 @@
                     btn_back_home: "← Retour à l'accueil",
                     signature: "Apps by Ato",
                     disclaimer: "Dofus et toutes les images associées utilisées sur ce site sont la propriété d'Ankama",
-                    version_info: "Version 1.0.1 - Juillet 2025",
+                    version_info: "Version 1.0.2 - Juillet 2025", // Updated version
                     drop_calculator_main_title: "Calculateur de Taux de Butin",
                     drop_calculator_subtitle: "Estimez vos chances d'obtenir des objets !",
                     drop_calculator_form_title: "Calculer le Taux de Butin",
@@ -258,7 +258,7 @@
                     btn_back_home: "← Back to Home",
                     signature: "Apps by Ato",
                     disclaimer: "Dofus and any related images used on this website are the properties of Ankama",
-                    version_info: "Version 1.0.1 - July 2025",
+                    version_info: "Version 1.0.2 - July 2025", // Updated version
                     drop_calculator_main_title: "Drop Rate Calculator",
                     drop_calculator_subtitle: "Estimate your chances of obtaining items!",
                     drop_calculator_form_title: "Calculate Drop Rate",
@@ -284,7 +284,7 @@
                     btn_back_home: "← Volver al Inicio",
                     signature: "Apps by Ato",
                     disclaimer: "Dofus y cualquier imagen relacionada utilizada en este sitio web son propiedad de Ankama",
-                    version_info: "Versión 1.0.1 - Julio 2025",
+                    version_info: "Versión 1.0.2 - Julio 2025", // Updated version
                     drop_calculator_main_title: "Calculadora de Tasa de Drop",
                     drop_calculator_subtitle: "¡Estima tus posibilidades de conseguir objetos!",
                     drop_calculator_form_title: "Calcular Tasa de Drop",
@@ -310,7 +310,7 @@
                     btn_back_home: "← Voltar ao Início",
                     signature: "Apps by Ato",
                     disclaimer: "Dofus e quaisquer imagens relacionadas usadas neste site são propriedade da Ankama",
-                    version_info: "Versão 1.0.1 - Julho 2025",
+                    version_info: "Versão 1.0.2 - Julho 2025", // Updated version
                     drop_calculator_main_title: "Calculadora Taxa de Drop",
                     drop_calculator_subtitle: "Estime suas chances de obter itens!",
                     drop_calculator_form_title: "Calcular Taxa de Drop",
@@ -336,7 +336,7 @@
                     btn_back_home: "← Torna alla Home",
                     signature: "Apps by Ato",
                     disclaimer: "Dofus e qualsiasi immagine correlata utilizzata su questo sito Web è di proprietà di Ankama",
-                    version_info: "Versione 1.0.1 - Luglio 2025",
+                    version_info: "Versione 1.0.2 - Luglio 2025", // Updated version
                     drop_calculator_main_title: "Calcolatore Tasso di Drop",
                     drop_calculator_subtitle: "Stima le tue possibilità di ottenere oggetti!",
                     drop_calculator_form_title: "Calcola Tasso di Drop",
@@ -375,6 +375,7 @@
             const autocompleteSuggestions = document.getElementById('autocompleteSuggestions');
             const monsterDropSuggestions = document.getElementById('monsterDropSuggestions'); // New monster drop section
             const monsterDropList = document.getElementById('monsterDropList'); // List within monster drop section
+            const versionInfoElement = document.querySelector('[data-translate-key="version_info"]'); // Get the version info element
 
             let currentLanguage = 'fr';
             let selectedItem = null; // To store the currently selected item object from API
@@ -412,13 +413,16 @@
 
                 try {
                     const params = new URLSearchParams();
-                    // Use $like for partial matching, and ensure it's case-insensitive if the API supports it.
-                    // The DofusDB API is based on FeathersJS, so this syntax should be standard.
+                    // The DofusDB API (FeathersJS) uses a specific syntax for $like.
+                    // Special characters in the search term itself (like 'é', 'à', etc.) need to be handled by URLSearchParams.
+                    // The '$like' operator itself should be part of the parameter name.
                     params.append('nom[$like]', `%${searchTerm}%`);
                     params.append('_limit', '10');
 
                     const response = await fetch(`${DOFUSDB_API_BASE_URL}/items?${params.toString()}`);
                     if (!response.ok) {
+                        // Log the full URL for debugging purposes
+                        console.error(`API request failed with status ${response.status}. URL: ${response.url}`);
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
                     const items = await response.json();
@@ -445,7 +449,8 @@
                 } catch (error) {
                     console.error("Error fetching items:", error);
                     hideMessage(dropInfoDiv);
-                    showMessage(dropErrorDiv, translations[currentLanguage].item_not_found, 'error');
+                    // Provide a more user-friendly error message if the API call truly failed
+                    showMessage(dropErrorDiv, translations[currentLanguage].item_not_found + " " + (error.message || ""), 'error');
                     autocompleteSuggestions.classList.add('hidden');
                 }
             }
@@ -481,6 +486,7 @@
                         try {
                             const response = await fetch(`${DOFUSDB_API_BASE_URL}/monsters/${group.monsterId}`);
                             if (!response.ok) {
+                                console.error(`API request for monster ${group.monsterId} failed with status ${response.status}. URL: ${response.url}`);
                                 throw new Error(`HTTP error! status: ${response.status}`);
                             }
                             const monster = await response.json();
@@ -626,6 +632,11 @@
             // Initial Load
             const savedLang = localStorage.getItem('dofusDropLang') || 'fr';
             setLanguage(savedLang);
+
+            // Set the version information in the footer
+            if (versionInfoElement) {
+                versionInfoElement.textContent = translations[currentLanguage].version_info;
+            }
 
             // Perform initial search for the default item on page load
             if (dropItemNameInput.value) {
