@@ -34,7 +34,7 @@
             color: #9ca3af;
         }
 
-        /* Styles for error/success messages, adapted to dark theme */
+        /* Styles pour les messages d'erreur/succès, adaptés au thème sombre */
         .message-box {
             padding: 1rem;
             margin-top: 1.5rem;
@@ -42,12 +42,12 @@
             font-weight: 500;
         }
         .message-box.error {
-            background-color: rgba(239, 68, 68, 0.1); /* Red-500 with opacity */
+            background-color: rgba(239, 68, 68, 0.1); /* Red-500 avec opacité */
             color: #ef4444; /* text-red-500 */
             border-left: 4px solid #ef4444; /* border-red-500 */
         }
         .message-box.success {
-            background-color: rgba(20, 184, 166, 0.1); /* Teal-500 with opacity */
+            background-color: rgba(20, 184, 166, 0.1); /* Teal-500 avec opacité */
             color: #14b8a6; /* text-teal-500 */
             border-left: 4px solid #14b8a6; /* border-teal-500 */
         }
@@ -59,7 +59,7 @@
         <div class="relative z-10 container mx-auto p-4 md:p-8 max-w-md min-h-screen flex flex-col">
             
             <div class="flex justify-between items-center mb-4">
-                <!-- Link back to GitHub Pages homepage -->
+                <!-- Lien de retour à la page d'accueil du GitHub Pages -->
                 <a href="https://atowhy.github.io/" class="text-teal-400 hover:text-teal-300" data-translate-key="btn_back_home">&larr; Retour à l'accueil</a>
                 <select id="language-selector" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-1 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
                     <option value="fr">🇫🇷 Français</option>
@@ -75,14 +75,19 @@
                 <p class="text-gray-400 mt-2" data-translate-key="drop_calculator_subtitle">Estimez vos chances d'obtenir des objets !</p>
             </header>
 
-            <!-- Drop Rate Calculator Content -->
+            <!-- Contenu du Calculateur de Taux de Butin -->
             <div id="content-drop-calculator">
                 <div class="card-bg p-6 rounded-2xl shadow-lg mb-8">
                     <h2 class="text-xl font-semibold mb-4 text-white" data-translate-key="drop_calculator_form_title">Calculer le Taux de Butin</h2>
                     
                     <div class="mb-4">
                         <label for="dropItemName" class="block text-sm font-medium text-gray-300 mb-1" data-translate-key="label_item_name">Nom de l'objet (Ex: Casque Cassé du Chafer):</label>
-                        <input type="text" id="dropItemName" value="Casque Cassé du Chafer" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition placeholder-custom">
+                        <div class="flex gap-2">
+                            <input type="text" id="dropItemName" value="Casque Cassé du Chafer" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition placeholder-custom">
+                            <button id="searchItemBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-transform transform hover:scale-105 shadow-md whitespace-nowrap" data-translate-key="btn_search_item">
+                                Rechercher
+                            </button>
+                        </div>
                     </div>
 
                     <div class="mb-4">
@@ -100,13 +105,13 @@
                         <input type="number" id="dropChallengeBonus" value="50" min="0" step="1" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition placeholder-custom">
                     </div>
 
-                    <!-- New field for Anomaly % -->
+                    <!-- Champ pour le % Anomalie -->
                     <div class="mb-4">
                         <label for="dropAnomalyBonus" class="block text-sm font-medium text-gray-300 mb-1" data-translate-key="label_anomaly_bonus">% Anomalie (0-120%):</label>
                         <input type="number" id="dropAnomalyBonus" value="0" min="0" max="120" step="1" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition placeholder-custom">
                     </div>
 
-                    <!-- New toggle for Ankama Shield -->
+                    <!-- Toggle pour Ankama Shield -->
                     <div class="mb-6 flex items-center">
                         <input type="checkbox" id="ankamaShieldToggle" checked class="h-4 w-4 text-teal-600 bg-gray-700 border-gray-600 rounded focus:ring-teal-500">
                         <label for="ankamaShieldToggle" class="ml-2 block text-sm font-medium text-gray-300" data-translate-key="label_ankama_shield">Activer Ankama Shield (+5% bonus)</label>
@@ -117,10 +122,10 @@
                     </button>
 
                     <div id="drop-result" class="message-box success hidden">
-                        <!-- Result will be displayed here -->
+                        <!-- Le résultat sera affiché ici -->
                     </div>
                     <div id="drop-error-message" class="message-box error hidden">
-                        <!-- Error messages will be displayed here -->
+                        <!-- Les messages d'erreur seront affichés ici -->
                     </div>
                 </div>
             </div>
@@ -141,7 +146,7 @@
                     signature: "Apps by Ato",
                     disclaimer: "Dofus et toutes les images associées utilisées sur ce site sont la propriété d'Ankama",
                     drop_calculator_main_title: "Calculateur de Taux de Butin",
-                    drop_calculator_subtitle: "Estimez vos chances d'obtenir des objets !", // Removed "rares"
+                    drop_calculator_subtitle: "Estimez vos chances d'obtenir des objets !",
                     drop_calculator_form_title: "Calculer le Taux de Butin",
                     label_item_name: "Nom de l'objet (Ex: Casque Cassé du Chafer):",
                     label_base_drop_rate: "Taux de butin de base (%) (Ex: 8.4 pour Casque Cassé du Chafer):",
@@ -150,18 +155,21 @@
                     label_anomaly_bonus: "% Anomalie (0-120%):",
                     label_ankama_shield: "Activer Ankama Shield (+5% bonus)",
                     btn_calculate_drop_rate: "Calculer le Taux de Butin",
+                    btn_search_item: "Rechercher",
                     drop_result_prefix: "Pour l'objet",
                     drop_estimated_rate: "Taux de butin estimé",
                     drop_average_combats: "Vous avez 1 chance sur",
                     drop_error_message: "Veuillez entrer des valeurs numériques valides pour le taux de base, la prospection (min 100), le bonus de défi (min 0) et le bonus d'anomalie (entre 0 et 120).",
-                    drop_error_item_name: "Veuillez entrer un nom pour l'objet."
+                    drop_error_item_name: "Veuillez entrer un nom pour l'objet.",
+                    item_not_found: "Objet non trouvé. Veuillez vérifier le nom ou entrer le taux de base manuellement.",
+                    fetching_data: "Recherche en cours..."
                 },
                 en: {
                     btn_back_home: "← Back to Home",
                     signature: "Apps by Ato",
                     disclaimer: "Dofus and any related images used on this website are the properties of Ankama",
                     drop_calculator_main_title: "Drop Rate Calculator",
-                    drop_calculator_subtitle: "Estimate your chances of obtaining items!", // Removed "rare"
+                    drop_calculator_subtitle: "Estimate your chances of obtaining items!",
                     drop_calculator_form_title: "Calculate Drop Rate",
                     label_item_name: "Item Name (Ex: Broken Chafer Helmet):",
                     label_base_drop_rate: "Base Drop Rate (%) (Ex: 8.4 for Broken Chafer Helmet):",
@@ -170,18 +178,21 @@
                     label_anomaly_bonus: "Anomaly % (0-120%):",
                     label_ankama_shield: "Activate Ankama Shield (+5% bonus)",
                     btn_calculate_drop_rate: "Calculate Drop Rate",
+                    btn_search_item: "Search",
                     drop_result_prefix: "For the item",
                     drop_estimated_rate: "Estimated drop rate",
                     drop_average_combats: "You have 1 chance in",
                     drop_error_message: "Please enter valid numeric values for base rate, prospecting (min 100), challenge bonus (min 0), and anomaly bonus (between 0 and 120).",
-                    drop_error_item_name: "Please enter an item name."
+                    drop_error_item_name: "Please enter an item name.",
+                    item_not_found: "Item not found. Please check the name or enter the base rate manually.",
+                    fetching_data: "Searching..."
                 },
                 es: {
                     btn_back_home: "← Volver al Inicio",
                     signature: "Apps by Ato",
                     disclaimer: "Dofus y cualquier imagen relacionada utilizada en este sitio web son propiedad de Ankama",
                     drop_calculator_main_title: "Calculadora de Tasa de Drop",
-                    drop_calculator_subtitle: "¡Estima tus posibilidades de conseguir objetos!", // Removed "raros"
+                    drop_calculator_subtitle: "¡Estima tus posibilidades de conseguir objetos!",
                     drop_calculator_form_title: "Calcular Tasa de Drop",
                     label_item_name: "Nombre del objeto (Ej: Casco Roto de Chafer):",
                     label_base_drop_rate: "Tasa de drop base (%) (Ej: 8.4 para Casco Roto de Chafer):",
@@ -190,18 +201,21 @@
                     label_anomaly_bonus: "% Anomalía (0-120%):",
                     label_ankama_shield: "Activar Ankama Shield (+5% bonus)",
                     btn_calculate_drop_rate: "Calcular Tasa de Drop",
+                    btn_search_item: "Buscar",
                     drop_result_prefix: "Para el objeto",
                     drop_estimated_rate: "Tasa de drop estimada",
                     drop_average_combats: "Tienes 1 oportunidad entre",
                     drop_error_message: "Por favor, introduce valores numéricos válidos para la tasa base, la prospección (mín. 100), el bono de desafío (mín. 0) y el bono de anomalía (entre 0 y 120).",
-                    drop_error_item_name: "Por favor, introduce un nombre para el objeto."
+                    drop_error_item_name: "Por favor, introduce un nombre para el objeto.",
+                    item_not_found: "Objeto no encontrado. Por favor, verifica el nombre o introduce la tasa base manualmente.",
+                    fetching_data: "Buscando..."
                 },
                 'pt-br': {
                     btn_back_home: "← Voltar ao Início",
                     signature: "Apps by Ato",
                     disclaimer: "Dofus e quaisquer imagens relacionadas usadas neste site são propriedade da Ankama",
                     drop_calculator_main_title: "Calculadora Taxa de Drop",
-                    drop_calculator_subtitle: "Estime suas chances de obter itens!", // Removed "raros"
+                    drop_calculator_subtitle: "Estime suas chances de obter itens!",
                     drop_calculator_form_title: "Calcular Taxa de Drop",
                     label_item_name: "Nome do Item (Ex: Capacete Quebrado de Chafer):",
                     label_base_drop_rate: "Taxa de Drop Base (%) (Ex: 8.4 para Capacete Quebrado de Chafer):",
@@ -210,18 +224,21 @@
                     label_anomaly_bonus: "% Anomalia (0-120%):",
                     label_ankama_shield: "Ativar Ankama Shield (+5% bônus)",
                     btn_calculate_drop_rate: "Calcular Taxa de Drop",
+                    btn_search_item: "Pesquisar",
                     drop_result_prefix: "Para o item",
                     drop_estimated_rate: "Taxa de drop estimada",
                     drop_average_combats: "Você tem 1 chance em",
                     drop_error_message: "Por favor, insira valores numéricos válidos para a taxa base, prospecção (mín. 100), bônus de desafio (mín. 0) e bônus de anomalia (entre 0 e 120).",
-                    drop_error_item_name: "Por favor, insira um nome para o item."
+                    drop_error_item_name: "Por favor, insira um nome para o item.",
+                    item_not_found: "Item não encontrado. Por favor, verifique o nome ou insira a taxa base manualmente.",
+                    fetching_data: "Pesquisando..."
                 },
                 it: {
                     btn_back_home: "← Torna alla Home",
                     signature: "Apps by Ato",
                     disclaimer: "Dofus e qualsiasi immagine correlata utilizzata su questo sito Web sono di proprietà di Ankama",
                     drop_calculator_main_title: "Calcolatore Tasso di Drop",
-                    drop_calculator_subtitle: "Stima le tue possibilità di ottenere oggetti!", // Removed "rari"
+                    drop_calculator_subtitle: "Stima le tue possibilità di ottenere oggetti!",
                     drop_calculator_form_title: "Calcola Tasso di Drop",
                     label_item_name: "Nome dell'oggetto (Es: Elmo Rotto di Chafer):",
                     label_base_drop_rate: "Tasso di drop base (%) (Es: 8.4 per Elmo Rotto di Chafer):",
@@ -230,11 +247,14 @@
                     label_anomaly_bonus: "% Anomalia (0-120%):",
                     label_ankama_shield: "Attiva Ankama Shield (+5% bonus)",
                     btn_calculate_drop_rate: "Calcola Tasso di Drop",
+                    btn_search_item: "Cerca",
                     drop_result_prefix: "Per l'oggetto",
                     drop_estimated_rate: "Tasso di drop stimato",
                     drop_average_combats: "Hai 1 possibilità su",
                     drop_error_message: "Inserisci valori numerici validi per il tasso base, la prospezione (min 100), il bonus di sfida (min 0) e il bonus di anomalia (tra 0 e 120).",
-                    drop_error_item_name: "Inserisci un nome per l'oggetto."
+                    drop_error_item_name: "Inserisci un nome per l'oggetto.",
+                    item_not_found: "Oggetto non trovato. Per favore, controlla il nome o inserisci il tasso base manualmente.",
+                    fetching_data: "Ricerca in corso..."
                 }
             };
 
@@ -248,8 +268,27 @@
             const dropResultDiv = document.getElementById('drop-result');
             const dropErrorDiv = document.getElementById('drop-error-message');
             const languageSelector = document.getElementById('language-selector');
+            const searchItemBtn = document.getElementById('searchItemBtn');
 
             let currentLanguage = 'fr';
+            let allDofusItems = []; // To store fetched items
+
+            // Function to fetch Dofus items from local JSON
+            async function fetchDofusItems() {
+                try {
+                    // Changed to ressources.json
+                    const response = await fetch('ressources.json');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    allDofusItems = await response.json();
+                    console.log("Dofus items loaded from ressources.json:", allDofusItems);
+                } catch (error) {
+                    console.error("Could not load ressources.json:", error);
+                    dropErrorDiv.innerHTML = `<p>Erreur lors du chargement des données des objets. Veuillez réessayer plus tard.</p>`;
+                    dropErrorDiv.classList.remove('hidden');
+                }
+            }
             
             // Translation Function
             function setLanguage(lang) {
@@ -273,6 +312,28 @@
                 });
                 dropResultDiv.classList.add('hidden');
                 dropErrorDiv.classList.add('hidden');
+            }
+
+            // Function to search for an item and populate base drop rate
+            async function searchItem() {
+                dropResultDiv.classList.add('hidden');
+                dropErrorDiv.classList.add('hidden');
+                dropErrorDiv.innerHTML = `<p>${translations[currentLanguage].fetching_data}</p>`;
+                dropErrorDiv.classList.remove('hidden');
+
+                const searchTerm = dropItemNameInput.value.trim().toLowerCase();
+                // Find item by name (case-insensitive)
+                const foundItem = allDofusItems.find(item => item.name.toLowerCase() === searchTerm);
+
+                if (foundItem) {
+                    dropBaseDropRateInput.value = foundItem.baseDropRate;
+                    dropErrorDiv.classList.add('hidden'); // Hide fetching message
+                    dropErrorDiv.innerHTML = ''; // Clear fetching message
+                } else {
+                    dropBaseDropRateInput.value = ''; // Clear previous value
+                    dropErrorDiv.innerHTML = `<p>${translations[currentLanguage].item_not_found}</p>`;
+                    dropErrorDiv.classList.remove('hidden');
+                }
             }
             
             // Drop Rate Calculator Logic
@@ -337,11 +398,14 @@
                 dropResultDiv.classList.remove('hidden');
             };
 
-            // Initial Load
+            // Event Listeners
             languageSelector.addEventListener('change', (e) => setLanguage(e.target.value));
-            
+            searchItemBtn.addEventListener('click', searchItem);
+
+            // Initial Load
             const savedLang = localStorage.getItem('dofusDropLang') || 'fr';
             setLanguage(savedLang);
+            fetchDofusItems(); // Load items when the page loads
         });
     </script>
 
