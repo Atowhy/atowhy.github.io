@@ -51,6 +51,39 @@
             color: #14b8a6; /* text-teal-500 */
             border-left: 4px solid #14b8a6; /* border-teal-500 */
         }
+
+        /* Styles pour l'autocomplétion */
+        .autocomplete-suggestions {
+            position: absolute;
+            background-color: rgba(31, 41, 55, 0.95); /* Slightly more opaque than card-bg */
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            width: calc(100% - 0.5rem); /* Adjust width to match input */
+            left: 0.25rem; /* Align with input padding */
+            top: 100%; /* Position below the input */
+            margin-top: 0.25rem;
+        }
+        .autocomplete-suggestion-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: background-color 0.2s ease;
+        }
+        .autocomplete-suggestion-item:hover {
+            background-color: rgba(20, 184, 166, 0.2); /* teal-500 with opacity */
+        }
+        .autocomplete-suggestion-item img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            border-radius: 0.25rem;
+            background-color: rgba(255, 255, 255, 0.05); /* subtle background for image */
+        }
     </style>
 </head>
 <body class="text-white antialiased">
@@ -80,14 +113,13 @@
                 <div class="card-bg p-6 rounded-2xl shadow-lg mb-8">
                     <h2 class="text-xl font-semibold mb-4 text-white" data-translate-key="drop_calculator_form_title">Calculer le Taux de Butin</h2>
                     
-                    <div class="mb-4">
+                    <div class="mb-4 relative">
                         <label for="dropItemName" class="block text-sm font-medium text-gray-300 mb-1" data-translate-key="label_item_name">Nom de l'objet (Ex: Casque Cassé du Chafer):</label>
-                        <div class="flex gap-2">
-                            <input type="text" id="dropItemName" value="Casque Cassé du Chafer" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition placeholder-custom">
-                            <button id="searchItemBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-transform transform hover:scale-105 shadow-md whitespace-nowrap" data-translate-key="btn_search_item">
-                                Rechercher
-                            </button>
+                        <div class="flex items-center gap-2">
+                            <img id="itemIcon" src="https://placehold.co/32x32/1f2937/9ca3af?text=?" alt="Icône de l'objet" class="h-8 w-8 rounded-md object-contain border border-gray-600">
+                            <input type="text" id="dropItemName" value="Casque Cassé du Chafer" class="flex-grow bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition placeholder-custom">
                         </div>
+                        <div id="autocompleteSuggestions" class="autocomplete-suggestions hidden"></div>
                     </div>
 
                     <div class="mb-4">
@@ -155,14 +187,15 @@
                     label_anomaly_bonus: "% Anomalie (0-120%):",
                     label_ankama_shield: "Activer Ankama Shield (+5% bonus)",
                     btn_calculate_drop_rate: "Calculer le Taux de Butin",
-                    btn_search_item: "Rechercher",
+                    btn_search_item: "Rechercher", // This button is now removed from HTML, but kept in translations for consistency if needed elsewhere.
                     drop_result_prefix: "Pour l'objet",
                     drop_estimated_rate: "Taux de butin estimé",
                     drop_average_combats: "Vous avez 1 chance sur",
                     drop_error_message: "Veuillez entrer des valeurs numériques valides pour le taux de base, la prospection (min 100), le bonus de défi (min 0) et le bonus d'anomalie (entre 0 et 120).",
                     drop_error_item_name: "Veuillez entrer un nom pour l'objet.",
                     item_not_found: "Objet non trouvé. Veuillez vérifier le nom ou entrer le taux de base manuellement.",
-                    fetching_data: "Recherche en cours..."
+                    fetching_data: "Recherche en cours...",
+                    no_base_drop_rate: "Le taux de butin de base n'est pas disponible pour cet objet dans la base de données. Veuillez l'entrer manuellement."
                 },
                 en: {
                     btn_back_home: "← Back to Home",
@@ -185,7 +218,8 @@
                     drop_error_message: "Please enter valid numeric values for base rate, prospecting (min 100), challenge bonus (min 0), and anomaly bonus (between 0 and 120).",
                     drop_error_item_name: "Please enter an item name.",
                     item_not_found: "Item not found. Please check the name or enter the base rate manually.",
-                    fetching_data: "Searching..."
+                    fetching_data: "Searching...",
+                    no_base_drop_rate: "Base drop rate is not available for this item in the database. Please enter it manually."
                 },
                 es: {
                     btn_back_home: "← Volver al Inicio",
@@ -208,7 +242,8 @@
                     drop_error_message: "Por favor, introduce valores numéricos válidos para la tasa base, la prospección (mín. 100), el bono de desafío (mín. 0) y el bono de anomalía (entre 0 y 120).",
                     drop_error_item_name: "Por favor, introduce un nombre para el objeto.",
                     item_not_found: "Objeto no encontrado. Por favor, verifica el nombre o introduce la tasa base manualmente.",
-                    fetching_data: "Buscando..."
+                    fetching_data: "Buscando...",
+                    no_base_drop_rate: "La tasa de drop base no está disponible para este objeto en la base de datos. Por favor, introdúcela manualmente."
                 },
                 'pt-br': {
                     btn_back_home: "← Voltar ao Início",
@@ -231,12 +266,13 @@
                     drop_error_message: "Por favor, insira valores numéricos válidos para a taxa base, prospecção (mín. 100), bônus de desafio (mín. 0) e bônus de anomalia (entre 0 e 120).",
                     drop_error_item_name: "Por favor, insira um nome para o item.",
                     item_not_found: "Item não encontrado. Por favor, verifique o nome ou insira a taxa base manualmente.",
-                    fetching_data: "Pesquisando..."
+                    fetching_data: "Pesquisando...",
+                    no_base_drop_rate: "A taxa de drop base não está disponível para este item no banco de dados. Por favor, insira-a manualmente."
                 },
                 it: {
                     btn_back_home: "← Torna alla Home",
                     signature: "Apps by Ato",
-                    disclaimer: "Dofus e qualsiasi immagine correlata utilizzata su questo sito Web sono di proprietà di Ankama",
+                    disclaimer: "Dofus e qualsiasi immagine correlata utilizzata su questo sito Web è di proprietà di Ankama",
                     drop_calculator_main_title: "Calcolatore Tasso di Drop",
                     drop_calculator_subtitle: "Stima le tue possibilità di ottenere oggetti!",
                     drop_calculator_form_title: "Calcola Tasso di Drop",
@@ -254,7 +290,8 @@
                     drop_error_message: "Inserisci valori numerici validi per il tasso base, la prospezione (min 100), il bonus di sfida (min 0) e il bonus di anomalia (tra 0 e 120).",
                     drop_error_item_name: "Inserisci un nome per l'oggetto.",
                     item_not_found: "Oggetto non trovato. Per favore, controlla il nome o inserisci il tasso base manualmente.",
-                    fetching_data: "Ricerca in corso..."
+                    fetching_data: "Ricerca in corso...",
+                    no_base_drop_rate: "Il tasso di drop base non è disponibile per questo oggetto nel database. Inseriscilo manualmente."
                 }
             };
 
@@ -268,7 +305,8 @@
             const dropResultDiv = document.getElementById('drop-result');
             const dropErrorDiv = document.getElementById('drop-error-message');
             const languageSelector = document.getElementById('language-selector');
-            const searchItemBtn = document.getElementById('searchItemBtn');
+            const itemIcon = document.getElementById('itemIcon'); // New element for the icon
+            const autocompleteSuggestions = document.getElementById('autocompleteSuggestions'); // New element for suggestions
 
             let currentLanguage = 'fr';
             let allDofusItems = []; // To store fetched items
@@ -276,13 +314,22 @@
             // Function to fetch Dofus items from local JSON
             async function fetchDofusItems() {
                 try {
-                    // Changed to ressources.json
                     const response = await fetch('ressources.json');
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
                     allDofusItems = await response.json();
                     console.log("Dofus items loaded from ressources.json:", allDofusItems);
+
+                    // Attempt to set initial icon for the default item
+                    const defaultItemName = dropItemNameInput.value.trim().toLowerCase();
+                    const defaultItem = allDofusItems.find(item => item.nom.toLowerCase() === defaultItemName);
+                    if (defaultItem && defaultItem.illustration_url) {
+                        itemIcon.src = defaultItem.illustration_url;
+                    } else {
+                        itemIcon.src = "https://placehold.co/32x32/1f2937/9ca3af?text=?"; // Fallback
+                    }
+
                 } catch (error) {
                     console.error("Could not load ressources.json:", error);
                     dropErrorDiv.innerHTML = `<p>Erreur lors du chargement des données des objets. Veuillez réessayer plus tard.</p>`;
@@ -314,27 +361,59 @@
                 dropErrorDiv.classList.add('hidden');
             }
 
-            // Function to search for an item and populate base drop rate
-            async function searchItem() {
-                dropResultDiv.classList.add('hidden');
-                dropErrorDiv.classList.add('hidden');
-                dropErrorDiv.innerHTML = `<p>${translations[currentLanguage].fetching_data}</p>`;
-                dropErrorDiv.classList.remove('hidden');
-
+            // Function to handle item search and autocomplete
+            function handleItemSearch() {
                 const searchTerm = dropItemNameInput.value.trim().toLowerCase();
-                // Find item by name (case-insensitive)
-                const foundItem = allDofusItems.find(item => item.name.toLowerCase() === searchTerm);
+                autocompleteSuggestions.innerHTML = ''; // Clear previous suggestions
+                autocompleteSuggestions.classList.add('hidden'); // Hide suggestions by default
 
-                if (foundItem) {
-                    dropBaseDropRateInput.value = foundItem.baseDropRate;
-                    dropErrorDiv.classList.add('hidden'); // Hide fetching message
-                    dropErrorDiv.innerHTML = ''; // Clear fetching message
+                if (searchTerm.length >= 3) { // Start search after 3 characters
+                    const filteredItems = allDofusItems.filter(item => 
+                        item.nom.toLowerCase().includes(searchTerm)
+                    ).slice(0, 10); // Limit to top 10 suggestions
+
+                    if (filteredItems.length > 0) {
+                        filteredItems.forEach(item => {
+                            const suggestionDiv = document.createElement('div');
+                            suggestionDiv.classList.add('autocomplete-suggestion-item');
+                            suggestionDiv.innerHTML = `
+                                <img src="${item.illustration_url || 'https://placehold.co/32x32/1f2937/9ca3af?text=?'}" alt="Icône de ${item.nom}">
+                                <span>${item.nom}</span>
+                            `;
+                            suggestionDiv.addEventListener('click', () => {
+                                dropItemNameInput.value = item.nom;
+                                itemIcon.src = item.illustration_url || "https://placehold.co/32x32/1f2937/9ca3af?text=?";
+                                // IMPORTANT: ressources.json does NOT contain baseDropRate.
+                                // If you want to populate this, you need to add baseDropRate to your ressources.json
+                                // For now, we'll just show a message if it's not present.
+                                if (item.baseDropRate !== undefined) {
+                                    dropBaseDropRateInput.value = item.baseDropRate;
+                                    dropErrorDiv.classList.add('hidden'); // Clear error if item found
+                                } else {
+                                    dropBaseDropRateInput.value = ''; // Clear previous value
+                                    dropErrorDiv.innerHTML = `<p>${translations[currentLanguage].no_base_drop_rate}</p>`;
+                                    dropErrorDiv.classList.remove('hidden');
+                                }
+                                autocompleteSuggestions.classList.add('hidden');
+                            });
+                            autocompleteSuggestions.appendChild(suggestionDiv);
+                        });
+                        autocompleteSuggestions.classList.remove('hidden');
+                    } else {
+                        dropErrorDiv.innerHTML = `<p>${translations[currentLanguage].item_not_found}</p>`;
+                        dropErrorDiv.classList.remove('hidden');
+                    }
                 } else {
-                    dropBaseDropRateInput.value = ''; // Clear previous value
-                    dropErrorDiv.innerHTML = `<p>${translations[currentLanguage].item_not_found}</p>`;
-                    dropErrorDiv.classList.remove('hidden');
+                    dropErrorDiv.classList.add('hidden'); // Hide error if less than 3 chars
                 }
             }
+
+            // Hide suggestions when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!dropItemNameInput.contains(e.target) && !autocompleteSuggestions.contains(e.target)) {
+                    autocompleteSuggestions.classList.add('hidden');
+                }
+            });
             
             // Drop Rate Calculator Logic
             window.calculateDropRate = function() {
@@ -400,7 +479,8 @@
 
             // Event Listeners
             languageSelector.addEventListener('change', (e) => setLanguage(e.target.value));
-            searchItemBtn.addEventListener('click', searchItem);
+            dropItemNameInput.addEventListener('input', handleItemSearch); // Autocomplete on input
+            // Removed searchItemBtn.addEventListener('click', searchItem); as it's replaced by autocomplete
 
             // Initial Load
             const savedLang = localStorage.getItem('dofusDropLang') || 'fr';
