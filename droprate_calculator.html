@@ -19,8 +19,8 @@
             left: 0;
             right: 0;
             bottom: 0;
-            /* Placeholder for background image. Replace with a valid URL if you have one, or remove if not needed. */
-            background-image: url('https://placehold.co/1920x1080/111827/ffffff?text=Background');
+            /* Background image from user's request */
+            background-image: url('BG_02.jpg'); /* Updated background image */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -180,28 +180,22 @@
             
             <div class="flex justify-between items-center mb-4">
                 <!-- Lien de retour à la page d'accueil du GitHub Pages -->
-                <a href="https://atowhy.github.io/" class="text-teal-400 hover:text-teal-300" data-translate-key="btn_back_home">&larr; Retour à l'accueil</a>
-                <select id="language-selector" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-1 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
-                    <option value="fr">🇫🇷 Français</option>
-                    <option value="en">🇬🇧 English</option>
-                    <option value="es">🇪🇸 Español</option>
-                    <option value="pt-br">🇧🇷 Português (BR)</option>
-                    <option value="it">🇮🇹 Italiano</option>
-                </select>
+                <a href="https://atowhy.github.io/" class="text-teal-400 hover:text-teal-300">&larr; Retour à l'accueil</a>
+                <!-- Language selector removed as per user request -->
             </div>
 
             <header class="text-center mb-8">
-                <h1 class="text-3xl md:text-4xl font-bold text-teal-400" data-translate-key="drop_calculator_main_title">Calculateur de Taux de Butin</h1>
-                <p class="text-gray-400 mt-2" data-translate-key="drop_calculator_subtitle">Estimez vos chances d'obtenir des objets !</p>
+                <h1 class="text-3xl md:text-4xl font-bold text-teal-400">Calculateur de Taux de Butin</h1>
+                <p class="text-gray-400 mt-2">Estimez vos chances d'obtenir des objets !</p>
             </header>
 
             <!-- Contenu du Calculateur de Taux de Butin -->
             <div id="content-drop-calculator">
                 <div class="card-bg p-6 rounded-2xl shadow-lg mb-8">
-                    <h2 class="text-xl font-semibold mb-4 text-white" data-translate-key="drop_calculator_form_title">Calculer le Taux de Butin</h2>
+                    <h2 class="text-xl font-semibold mb-4">Calculer le Taux de Butin</h2>
                     
                     <div class="mb-4 relative">
-                        <label for="dropItemName" class="block text-sm font-medium text-gray-300 mb-1" data-translate-key="label_item_name">Nom de l'objet (Ex: Casque Cassé du Chafer):</label>
+                        <label for="dropItemName" class="block text-sm font-medium text-gray-300 mb-1">Nom de l'objet (Ex: Casque Cassé du Chafer):</label>
                         <div class="flex items-center gap-2">
                             <img id="itemIcon" src="https://placehold.co/32x32/1f2937/9ca3af?text=?" alt="Icône de l'objet" class="h-8 w-8 rounded-md object-contain border border-gray-600">
                             <input type="text" id="dropItemName" value="" placeholder="Casque Cassé du Chafer" class="flex-grow bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition placeholder-custom">
@@ -211,40 +205,40 @@
 
                     <!-- New section for monster drop suggestions -->
                     <div id="monsterDropSuggestions" class="monster-drop-suggestions">
-                        <p class="text-gray-400 text-sm mb-2" data-translate-key="label_select_monster_drop">Sélectionnez un monstre pour pré-remplir le taux de butin :</p>
+                        <p class="text-gray-400 text-sm mb-2">Sélectionnez un monstre pour pré-remplir le taux de butin :</p>
                         <div id="monsterDropList" class="space-y-1">
                             <!-- Monster drop items will be inserted here -->
                         </div>
                     </div>
 
                     <div class="mb-4">
-                        <label for="dropBaseDropRate" class="block text-sm font-medium text-gray-300 mb-1" data-translate-key="label_base_drop_rate">Taux de butin de base (%) (Ex: 8.4 pour Casque Cassé du Chafer):</label>
+                        <label for="dropBaseDropRate" class="block text-sm font-medium text-gray-300 mb-1">Taux de butin de base (%) (Ex: 8.4 pour Casque Cassé du Chafer):</label>
                         <input type="number" id="dropBaseDropRate" value="8.4" min="0.1" step="0.1" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition placeholder-custom">
                     </div>
 
                     <div class="mb-4">
-                        <label for="dropPlayerPP" class="block text-sm font-medium text-gray-300 mb-1" data-translate-key="label_player_pp">Votre Prospection (PP):</label>
+                        <label for="dropPlayerPP" class="block text-sm font-medium text-gray-300 mb-1">Votre Prospection (PP):</label>
                         <input type="number" id="dropPlayerPP" value="100" min="100" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition placeholder-custom">
                     </div>
 
                     <div class="mb-4">
-                        <label for="dropChallengeBonus" class="block text-sm font-medium text-gray-300 mb-1" data-translate-key="label_challenge_bonus">Bonus de défi (%) (Ex: 50 pour un défi réussi):</label>
+                        <label for="dropChallengeBonus" class="block text-sm font-medium text-gray-300 mb-1">Bonus de défi (%) (Ex: 50 pour un défi réussi):</label>
                         <input type="number" id="dropChallengeBonus" value="50" min="0" step="1" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition placeholder-custom">
                     </div>
 
                     <!-- Champ pour le % Anomalie -->
                     <div class="mb-4">
-                        <label for="dropAnomalyBonus" class="block text-sm font-medium text-gray-300 mb-1" data-translate-key="label_anomaly_bonus">% Anomalie (0-120%):</label>
+                        <label for="dropAnomalyBonus" class="block text-sm font-medium text-gray-300 mb-1">% Anomalie (0-120%):</label>
                         <input type="number" id="dropAnomalyBonus" value="0" min="0" max="120" step="1" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition placeholder-custom">
                     </div>
 
                     <!-- Toggle pour Ankama Shield -->
                     <div class="mb-6 flex items-center">
                         <input type="checkbox" id="ankamaShieldToggle" checked class="h-4 w-4 text-teal-600 bg-gray-700 border-gray-600 rounded focus:ring-teal-500">
-                        <label for="ankamaShieldToggle" class="ml-2 block text-sm font-medium text-gray-300" data-translate-key="label_ankama_shield">Activer Ankama Shield (+5% bonus)</label>
+                        <label for="ankamaShieldToggle" class="ml-2 block text-sm font-medium text-gray-300">Activer Ankama Shield (+5% bonus)</label>
                     </div>
 
-                    <button onclick="calculateDropRate()" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg transition-transform transform hover:scale-105 shadow-md" data-translate-key="btn_calculate_drop_rate">
+                    <button onclick="calculateDropRate()" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg transition-transform transform hover:scale-105 shadow-md">
                         Calculer le Taux de Butin
                     </button>
 
@@ -262,26 +256,37 @@
             
             <footer class="text-center text-gray-500 text-sm mt-auto pt-12 pb-4">
                 <!-- Image of Dofus Logo -->
-                <img src="https://placehold.co/48x48/111827/9ca3af?text=Dofus" alt="Logo Dofus" class="h-12 mx-auto mb-2 opacity-50">
-                <p data-translate-key="signature">Apps by Ato</p>
-                <p class="text-xs text-gray-600 mt-4" data-translate-key="disclaimer">Dofus and any related images used on this website are the properties of Ankama</p>
-                <p class="text-xs text-gray-600 mt-2" data-translate-key="version_info"></p>
+                <img src="LogoDofus.png" alt="Logo Dofus" class="h-12 mx-auto mb-2 opacity-50">
+                <p>Apps by Ato</p>
+                <p class="text-xs text-gray-600 mt-4">Dofus et toutes les images associées utilisées sur ce site sont la propriété d'Ankama</p>
+                <p class="text-xs text-gray-600 mt-2">Version 2.0.22 - Juillet 2025</p>
             </footer>
         </div>
     </div>
 
     <script>
-        // Moved setLanguage and calculateDropRate outside DOMContentLoaded for global access
+        // Déclaration des variables globales ou semi-globales
+        let currentLanguage = 'fr'; // La langue par défaut est le français
+        let selectedItem = null; // Pour stocker l'objet item actuellement sélectionné
+        const DOFUSDB_API_BASE_URL = 'https://api.dofusdb.fr';
+
+        // Déclaration des éléments DOM pour un accès facile
+        let dropItemNameInput, dropBaseDropRateInput, dropPlayerPPInput, dropChallengeBonusInput,
+            dropAnomalyBonusInput, ankamaShieldToggle, dropResultDiv, dropErrorDiv, dropInfoDiv,
+            itemIcon, autocompleteSuggestions, monsterDropSuggestions, monsterDropList, versionInfoElement;
+
+        // Définition des traductions
         const translations = {
             fr: {
                 btn_back_home: "← Retour à l'accueil",
                 signature: "Apps by Ato",
                 disclaimer: "Dofus et toutes les images associées utilisées sur ce site sont la propriété d'Ankama",
-                version_info: "Version 2.0.21 - Juillet 2025", // Updated version
+                version_info: "Version 2.0.22 - Juillet 2025",
                 drop_calculator_main_title: "Calculateur de Taux de Butin",
                 drop_calculator_subtitle: "Estimez vos chances d'obtenir des objets !",
                 drop_calculator_form_title: "Calculer le Taux de Butin",
                 label_item_name: "Nom de l'objet (Ex: Casque Cassé du Chafer):",
+                label_item_name_placeholder: "Casque Cassé du Chafer",
                 label_base_drop_rate: "Taux de butin de base (%) (Ex: 8.4 pour Casque Cassé du Chafer):",
                 label_player_pp: "Votre Prospection (PP):",
                 label_challenge_bonus: "Bonus de défi (%) (Ex: 50 pour un défi réussi):",
@@ -303,11 +308,12 @@
                 btn_back_home: "← Back to Home",
                 signature: "Apps by Ato",
                 disclaimer: "Dofus and any related images used on this website are the properties of Ankama",
-                version_info: "Version 2.0.19 - July 2025", // Updated version
+                version_info: "Version 2.0.22 - July 2025",
                 drop_calculator_main_title: "Drop Rate Calculator",
                 drop_calculator_subtitle: "Estimate your chances of obtaining items!",
                 drop_calculator_form_title: "Calculate Drop Rate",
                 label_item_name: "Item Name (Ex: Broken Chafer Helmet):",
+                label_item_name_placeholder: "Broken Chafer Helmet",
                 label_base_drop_rate: "Base Drop Rate (%) (Ex: 8.4 for Broken Chafer Helmet):",
                 label_player_pp: "Your Prospecting (PP):",
                 label_challenge_bonus: "Challenge Bonus (%) (Ex: 50 for a successful challenge):",
@@ -329,11 +335,12 @@
                 btn_back_home: "← Volver al Inicio",
                 signature: "Apps by Ato",
                 disclaimer: "Dofus y cualquier imagen relacionada utilizada en este sitio web son propiedad de Ankama",
-                version_info: "Versión 2.0.19 - Julio 2025", // Updated version
+                version_info: "Versión 2.0.22 - Julio 2025",
                 drop_calculator_main_title: "Calculadora de Tasa de Drop",
                 drop_calculator_subtitle: "¡Estima tus posibilidades de conseguir objetos!",
                 drop_calculator_form_title: "Calcular Tasa de Drop",
                 label_item_name: "Nombre del objeto (Ej: Casco Roto de Chafer):",
+                label_item_name_placeholder: "Casco Roto de Chafer",
                 label_base_drop_rate: "Tasa de drop base (%) (Ej: 8.4 para Casco Roto de Chafer):",
                 label_player_pp: "Tu Prospección (PP):",
                 label_challenge_bonus: "Bono de desafío (%) (Ej: 50 para un desafío exitoso):",
@@ -344,21 +351,23 @@
                 drop_estimated_rate: "Tasa de drop estimada",
                 drop_average_combats: "Tienes 1 oportunidad entre",
                 drop_error_message: "Por favor, introduce valores numéricos válidos para la tasa base, la prospección (mín. 100), el bono de desafío (mín. 0) y el bono de anomalía (entre 0 et 120).",
-                item_not_found: "Objeto non encontrado.",
+                drop_error_item_name: "Por favor, introduce un nombre para el objeto.",
+                item_not_found: "Objeto no encontrado.",
                 fetching_data: "Buscando...",
                 no_base_drop_rate: "No se encontró una tasa de drop base para este objeto a través de monstruos. Por favor, introdúcela manualmente.",
                 label_select_monster_drop: "Selecciona un monstro para pre-remplir le taux de butin :",
                 no_monster_drops: "Ningún monstro parece soltar este objeto, o los datos no están disponibles."
             },
             'pt-br': {
-                btn_back_home: "← Voltar ao Inicio",
+                btn_back_home: "← Voltar ao Início",
                 signature: "Apps by Ato",
                 disclaimer: "Dofus e quaisquer images relacionadas usadas neste site são propriedade da Ankama",
-                version_info: "Versão 2.0.15 - Julho 2025", // Updated version
+                version_info: "Versão 2.0.22 - Julho 2025",
                 drop_calculator_main_title: "Calculadora Taxa de Drop",
                 drop_calculator_subtitle: "Estime suas chances de obter itens!",
                 drop_calculator_form_title: "Calcular Taxa de Drop",
                 label_item_name: "Nome do Item (Ex: Capacete Quebrado de Chafer):",
+                label_item_name_placeholder: "Capacete Quebrado de Chafer",
                 label_base_drop_rate: "Taxa de Drop Base (%) (Ex: 8.4 para Capacete Quebrado de Chafer):",
                 label_player_pp: "Sua Prospecção (PP):",
                 label_challenge_bonus: "Bônus de Desafio (%) (Ex: 50 para um desafio bem-sucedido):",
@@ -379,11 +388,12 @@
                 btn_back_home: "← Torna alla Home",
                 signature: "Apps by Ato",
                 disclaimer: "Dofus e qualsiasi image correlata utilizzata su questo site Web è di proprietà di Ankama",
-                version_info: "Versão 2.0.11 - Luglio 2025", // Updated version
+                version_info: "Versão 2.0.22 - Luglio 2025",
                 drop_calculator_main_title: "Calcolatore Tasso di Drop",
                 drop_calculator_subtitle: "Stima le tue possibilità di ottenere oggetti!",
                 drop_calculator_form_title: "Calcola Tasso di Drop",
-                label_item_name: "Nom de l'oggetto (Es: Elmo Rotto di Chafer):",
+                label_item_name: "Nome dell'oggetto (Es: Elmo Rotto di Chafer):",
+                label_item_name_placeholder: "Elmo Rotto di Chafer",
                 label_base_drop_rate: "Tasso di drop base (%) (Es: 8.4 per Elmo Rotto di Chafer):",
                 label_player_pp: "La tua Prospezione (PP):",
                 label_challenge_bonus: "Bonus di sfida (%) (Es: 50 per una sfida riuscita):",
@@ -402,12 +412,12 @@
             }
         };
 
-        // Function to handle language setting and translation
+        // Fonction pour gérer le réglage de la langue et la traduction
         function setLanguage(lang) {
             currentLanguage = lang;
             localStorage.setItem('dofusDropLang', lang);
             document.documentElement.lang = lang;
-            languageSelector.value = lang;
+            // languageSelector est supprimé, donc plus besoin de le récupérer ici
 
             document.querySelectorAll('[data-translate-key]').forEach(element => {
                 const key = element.getAttribute('data-translate-key');
@@ -416,20 +426,33 @@
                 }
             });
 
-            // For placeholders, use data-translate-key-placeholder
+            // Pour les placeholders, utiliser data-translate-key-placeholder
             document.querySelectorAll('[data-translate-key-placeholder]').forEach(element => {
                 const key = element.getAttribute('data-translate-key-placeholder');
                 if (translations[lang] && translations[lang][key]) {
                     element.placeholder = translations[lang][key];
                 }
             });
+            // Masquer les messages lors du changement de langue pour éviter les incohérences
             hideMessage(dropResultDiv);
             hideMessage(dropErrorDiv);
             hideMessage(dropInfoDiv);
         }
 
-        // Drop Rate Calculator Logic (already global)
+        // Logique du Calculateur de Taux de Butin (rendue globale)
         window.calculateDropRate = function() {
+            // Récupération des éléments DOM à l'intérieur de la fonction si nécessaire,
+            // ou s'assurer qu'ils sont déjà globalement accessibles.
+            const dropItemNameInput = document.getElementById('dropItemName');
+            const dropBaseDropRateInput = document.getElementById('dropBaseDropRate');
+            const dropPlayerPPInput = document.getElementById('dropPlayerPP');
+            const dropChallengeBonusInput = document.getElementById('dropChallengeBonus');
+            const dropAnomalyBonusInput = document.getElementById('dropAnomalyBonus');
+            const ankamaShieldToggle = document.getElementById('ankamaShieldToggle');
+            const dropResultDiv = document.getElementById('drop-result');
+            const dropErrorDiv = document.getElementById('drop-error-message');
+            const dropInfoDiv = document.getElementById('drop-info-message');
+
             hideMessage(dropResultDiv);
             hideMessage(dropErrorDiv);
             hideMessage(dropInfoDiv);
@@ -451,14 +474,14 @@
                 return;
             }
 
-            // PP Multiplier formula based on Dofus mechanics (simplified)
+            // Formule du multiplicateur de Prospection (PP) basée sur les mécaniques de Dofus (simplifiée)
             let ppMultiplier;
-            if (playerPP < 0) { // Should not happen with min="100" but as a safeguard
+            if (playerPP < 0) { // Ne devrait pas arriver avec min="100" mais par sécurité
                 ppMultiplier = 1;
             } else {
                 const exponent = (250 - playerPP) / 85;
                 ppMultiplier = 0.74 + (1.755 / (1 + Math.exp(exponent)));
-                ppMultiplier = Math.min(ppMultiplier, 2.5); // Cap at 2.5 (250% of base)
+                ppMultiplier = Math.min(ppMultiplier, 2.5); // Plafonné à 2.5 (250% de la base)
             }
 
             let effectiveDropRate = baseDropRate * ppMultiplier * (1 + challengeBonus / 100);
@@ -468,14 +491,14 @@
             }
 
             if (isAnkamaShieldActive) {
-                effectiveDropRate *= (1 + 5 / 100); // +5% bonus from Ankama Shield
+                effectiveDropRate *= (1 + 5 / 100); // +5% de bonus d'Ankama Shield
             }
 
             let chanceDenominator = 0;
             if (effectiveDropRate > 0) {
                 chanceDenominator = 100 / effectiveDropRate;
             } else {
-                chanceDenominator = Infinity; // Avoid division by zero
+                chanceDenominator = Infinity; // Évite la division par zéro
             }
 
             dropResultDiv.innerHTML = `
@@ -490,39 +513,34 @@
 
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Elements for Drop Calculator
-            const dropItemNameInput = document.getElementById('dropItemName');
-            const dropBaseDropRateInput = document.getElementById('dropBaseDropRate');
-            const dropPlayerPPInput = document.getElementById('dropPlayerPP');
-            const dropChallengeBonusInput = document.getElementById('dropChallengeBonus');
-            const dropAnomalyBonusInput = document.getElementById('dropAnomalyBonus');
-            const ankamaShieldToggle = document.getElementById('ankamaShieldToggle');
-            const dropResultDiv = document.getElementById('drop-result');
-            const dropErrorDiv = document.getElementById('drop-error-message');
-            const dropInfoDiv = document.getElementById('drop-info-message'); // New info message div
-            const languageSelector = document.getElementById('language-selector');
-            const itemIcon = document.getElementById('itemIcon');
-            const autocompleteSuggestions = document.getElementById('autocompleteSuggestions');
-            const monsterDropSuggestions = document.getElementById('monsterDropSuggestions'); // New monster drop section
-            const monsterDropList = document.getElementById('monsterDropList'); // List within monster drop section
-            const versionInfoElement = document.querySelector('[data-translate-key="version_info"]'); // Get the version info element
+            // Initialisation des éléments DOM après le chargement du document
+            dropItemNameInput = document.getElementById('dropItemName');
+            dropBaseDropRateInput = document.getElementById('dropBaseDropRate');
+            dropPlayerPPInput = document.getElementById('dropPlayerPP');
+            dropChallengeBonusInput = document.getElementById('dropChallengeBonus');
+            dropAnomalyBonusInput = document.getElementById('dropAnomalyBonus');
+            ankamaShieldToggle = document.getElementById('ankamaShieldToggle');
+            dropResultDiv = document.getElementById('drop-result');
+            dropErrorDiv = document.getElementById('drop-error-message');
+            dropInfoDiv = document.getElementById('drop-info-message');
+            // languageSelector n'est plus nécessaire car supprimé
+            itemIcon = document.getElementById('itemIcon');
+            autocompleteSuggestions = document.getElementById('autocompleteSuggestions');
+            monsterDropSuggestions = document.getElementById('monsterDropSuggestions');
+            monsterDropList = document.getElementById('monsterDropList');
+            versionInfoElement = document.querySelector('[data-translate-key="version_info"]');
 
-            let currentLanguage = 'fr'; // Initialize currentLanguage here
+            // La variable currentLanguage est maintenant globale
 
-            const DOFUSDB_API_BASE_URL = 'https://api.dofusdb.fr';
-
-            // Function to normalize string for slug search
+            // Fonction utilitaire pour normaliser une chaîne pour la recherche de slug
             function normalizeString(str) {
-                // Convert to NFD form and remove diacritics (accents)
                 str = str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                // Convert to lowercase
                 str = str.toLowerCase();
-                // Replace any non-alphanumeric characters (except spaces) with nothing
                 str = str.replace(/[^a-z0-9\s]/g, "");
-                return str; // Return with spaces, encodeURIComponent will handle them
+                return str;
             }
 
-            // Utility function to display messages
+            // Fonctions utilitaires pour afficher/masquer les messages
             function showMessage(element, message, type) {
                 element.innerHTML = `<p>${message}</p>`;
                 element.className = `message-box ${type}`;
@@ -534,56 +552,52 @@
                 element.innerHTML = '';
             }
 
-            // Function to control visibility of the monster suggestions box
+            // Fonction pour contrôler la visibilité de la boîte de suggestions de monstres
             function setMonsterSuggestionsVisibility(isVisible) {
                 if (isVisible) {
                     monsterDropSuggestions.classList.add('is-visible');
-                    monsterDropSuggestions.classList.remove('hidden'); // Ensure Tailwind's hidden is removed
+                    monsterDropSuggestions.classList.remove('hidden');
                 } else {
                     monsterDropSuggestions.classList.remove('is-visible');
-                    monsterDropSuggestions.classList.add('hidden'); // Add Tailwind's hidden for consistency
+                    monsterDropSuggestions.classList.add('hidden');
                 }
             }
 
-            // Function to display monster drop options based on the selected item's drop data
+            // Fonction pour afficher les options de drop de monstre basées sur les données de l'objet sélectionné
             async function displayMonsterDropOptions(item) {
-                monsterDropList.innerHTML = ''; // Clear previous list items
-                hideMessage(dropInfoDiv); // Hide info message
-                hideMessage(dropErrorDiv); // Hide error message
-                setMonsterSuggestionsVisibility(false); // Hide the container initially
+                monsterDropList.innerHTML = '';
+                hideMessage(dropInfoDiv);
+                hideMessage(dropErrorDiv);
+                setMonsterSuggestionsVisibility(false);
 
                 let dropGroupsToProcess = [];
 
                 if (item.dropGroups && item.dropGroups.length > 0) {
-                    console.log("Using dropGroups from item for monster details and rates.");
-                    // Extract monsterIds from dropGroups
+                    console.log("Utilisation de dropGroups de l'objet pour les détails et les taux de monstre.");
                     const monsterIdsFromGroups = item.dropGroups.map(group => group.monsterId).filter(id => id !== undefined);
-                    // For dropGroups, we need to fetch random-drop-groups for each monster to get the rate
                     dropGroupsToProcess = await Promise.all(monsterIdsFromGroups.map(async monsterId => {
                         try {
                             const response = await fetch(`${DOFUSDB_API_BASE_URL}/random-drop-groups?itemId=${item.id}&monsterId=${monsterId}`);
                             if (!response.ok) {
-                                console.error(`API request for random-drop-groups for item ${item.id}, monster ${monsterId} failed with status ${response.status}.`);
-                                return { monsterId: monsterId, rate: "N/A" }; // Fallback
+                                console.error(`Requête API pour random-drop-groups pour l'objet ${item.id}, monstre ${monsterId} a échoué avec le statut ${response.status}.`);
+                                return { monsterId: monsterId, rate: "N/A" };
                             }
                             const dropData = await response.json();
-                            // Access 'rate' directly from the array, not from a 'data' property
                             const rate = (dropData && dropData.length > 0 && dropData[0].rate !== undefined) ? dropData[0].rate : "N/A";
                             return { monsterId: monsterId, rate: rate };
                         } catch (error) {
-                            console.error(`Error fetching random-drop-groups for item ${item.id}, monster ${monsterId}:`, error);
-                            return { monsterId: monsterId, rate: "N/A" }; // Fallback on error
+                            console.error(`Erreur lors de la récupération de random-drop-groups pour l'objet ${item.id}, monstre ${monsterId}:`, error);
+                            return { monsterId: monsterId, rate: "N/A" };
                         }
                     }));
                 } else if (item.dropMonsterIds && item.dropMonsterIds.length > 0) {
-                    console.log("Using dropMonsterIds directly for monster details and rates.");
-                    // For dropMonsterIds, we need to fetch each monster and then find the item's drop rate within its drops array
+                    console.log("Utilisation directe de dropMonsterIds pour les détails et les taux de monstre.");
                     dropGroupsToProcess = await Promise.all(item.dropMonsterIds.map(async monsterId => {
                         try {
                             const response = await fetch(`${DOFUSDB_API_BASE_URL}/monsters/${monsterId}`);
                             if (!response.ok) {
-                                console.error(`API request for monster ${monsterId} failed with status ${response.status}. URL: ${response.url}`);
-                                throw new Error(`HTTP error! status: ${response.status}`);
+                                console.error(`Requête API pour le monstre ${monsterId} a échoué avec le statut ${response.status}. URL: ${response.url}`);
+                                throw new Error(`Erreur HTTP! statut: ${response.status}`);
                             }
                             const monster = await response.json();
                             
@@ -591,7 +605,6 @@
                             if (monster.drops && monster.drops.length > 0) {
                                 const itemDrop = monster.drops.find(d => d.objectId === item.id);
                                 if (itemDrop) {
-                                    // Prioritize higher grades, then fall back
                                     if (itemDrop.percentDropForGrade5 !== undefined && itemDrop.percentDropForGrade5 > 0) {
                                         rate = itemDrop.percentDropForGrade5;
                                     } else if (itemDrop.percentDropForGrade4 !== undefined && itemDrop.percentDropForGrade4 > 0) {
@@ -602,57 +615,53 @@
                                         rate = itemDrop.percentDropForGrade2;
                                     } else if (itemDrop.percentDropForGrade1 !== undefined && itemDrop.percentDropForGrade1 > 0) {
                                         rate = itemDrop.percentDropForGrade1;
-                                    } else if (itemDrop.rate !== undefined) { // Fallback to a general 'rate' if present
+                                    } else if (itemDrop.rate !== undefined) {
                                         rate = itemDrop.rate;
                                     }
                                 }
                             }
-                            return { monsterId: monsterId, monster: monster, rate: rate }; // Return monster object directly
+                            return { monsterId: monsterId, monster: monster, rate: rate };
                         } catch (error) {
-                            console.error(`Error fetching monster ${monsterId}:`, error);
-                            return null; // Return null for failed fetches
+                            console.error(`Erreur lors de la récupération du monstre ${monsterId}:`, error);
+                            return null;
                         }
                     }));
                 } else {
-                    // This block is executed if neither dropGroups nor dropMonsterIds are present in the item data
                     showMessage(dropInfoDiv, translations[currentLanguage].no_monster_drops, 'info');
-                    setMonsterSuggestionsVisibility(false); // Ensure the suggestions box is hidden
+                    setMonsterSuggestionsVisibility(false);
                     return;
                 }
 
-                // Filter out nulls from dropGroupsToProcess and then fetch monster details for those that only have monsterId
                 const finalMonsterDrops = [];
                 for (const group of dropGroupsToProcess) {
                     if (group && group.monsterId) {
-                        let monsterDetails = group.monster; // Already fetched if from dropMonsterIds path
-                        if (!monsterDetails) { // If it came from dropGroups path, we need to fetch monster details
+                        let monsterDetails = group.monster;
+                        if (!monsterDetails) {
                             try {
                                 const response = await fetch(`${DOFUSDB_API_BASE_URL}/monsters/${group.monsterId}`);
                                 if (!response.ok) {
-                                    console.error(`API request for monster ${group.monsterId} failed with status ${response.status}. URL: ${response.url}`);
-                                    continue; // Skip this monster if fetch fails
+                                    console.error(`Requête API pour le monstre ${group.monsterId} a échoué avec le statut ${response.status}. URL: ${response.url}`);
+                                    continue;
                                 }
                                 monsterDetails = await response.json();
                             } catch (error) {
-                                console.error(`Error fetching monster ${group.monsterId}:`, error);
-                                continue; // Skip this monster on error
+                                console.error(`Erreur lors de la récupération du monstre ${group.monsterId}:`, error);
+                                continue;
                             }
                         }
                         if (monsterDetails) {
-                             // Ensure rate is correctly passed from the initial random-drop-groups fetch if applicable
                             const actualRate = group.rate !== undefined ? group.rate : (monsterDetails.drops && monsterDetails.drops.find(d => d.objectId === item.id)?.percentDropForGrade5 || "N/A");
                             finalMonsterDrops.push({ monster: monsterDetails, rate: actualRate });
                         }
                     }
                 }
                 
-                console.log("Final Monster Drops (after all processing):", finalMonsterDrops);
+                console.log("Final Monster Drops (après tout traitement):", finalMonsterDrops);
 
                 if (finalMonsterDrops.length > 0) {
                     finalMonsterDrops.forEach(({ monster, rate }) => {
                         const monsterDropDiv = document.createElement('div');
                         monsterDropDiv.classList.add('monster-drop-item');
-                        // Apply toFixed(2) if rate is a number
                         const formattedRate = typeof rate === 'number' ? rate.toFixed(2) : rate;
                         const innerHtmlContent = `
                             <img src="${monster.img || 'https://placehold.co/28x28/1f2937/9ca3af?text=?'}" onerror="this.onerror=null;this.src='https://placehold.co/28x28/1f2937/9ca3af?text=?';" alt="Icône de ${monster.name.fr || monster.name.en || 'Monstre'}">
@@ -660,22 +669,18 @@
                             <span class="drop-rate">${formattedRate}%</span>
                         `;
                         monsterDropDiv.innerHTML = innerHtmlContent;
-                        console.log("Generated monsterDropDiv HTML:", innerHtmlContent);
+                        console.log("HTML de monsterDropDiv généré:", innerHtmlContent);
                         
-                        // Add click listener for selection to pre-fill the base drop rate
                         monsterDropDiv.addEventListener('click', () => {
-                            // Remove 'is-selected' from all other items first
                             const currentSelected = monsterDropList.querySelector('.monster-drop-item.is-selected');
                             if (currentSelected) {
                                 currentSelected.classList.remove('is-selected');
                             }
-                            // Add 'is-selected' to the clicked item
                             monsterDropDiv.classList.add('is-selected');
 
                             if (typeof rate === 'number') {
-                                dropBaseDropRateInput.value = rate.toFixed(2); // Pre-fill with rounded rate
+                                dropBaseDropRateInput.value = rate.toFixed(2);
                                 showMessage(dropInfoDiv, `Taux de butin pré-rempli avec ${formattedRate}% pour ${monster.name.fr}.`, 'info');
-                                // Keep the list visible after selection
                             } else {
                                 showMessage(dropInfoDiv, `Taux de butin non spécifié pour ${monster.name.fr}.`, 'info');
                             }
@@ -683,21 +688,20 @@
 
                         monsterDropList.appendChild(monsterDropDiv);
                     });
-                    setMonsterSuggestionsVisibility(true); // Make the container visible
-                    console.log("monsterDropList children count:", monsterDropList.children.length); // Log children count
+                    setMonsterSuggestionsVisibility(true);
+                    console.log("Nombre d'enfants de monsterDropList:", monsterDropList.children.length);
                 } else {
                     showMessage(dropInfoDiv, translations[currentLanguage].no_monster_drops, 'info');
-                    setMonsterSuggestionsVisibility(false); // Ensure the container is hidden
+                    setMonsterSuggestionsVisibility(false);
                 }
             }
 
-
-            // Function to fetch Dofus items from API for autocomplete
+            // Fonction pour récupérer les objets Dofus de l'API pour l'autocomplétion
             async function fetchItemsForAutocomplete(searchTerm) {
                 hideMessage(dropErrorDiv);
                 hideMessage(dropResultDiv);
-                setMonsterSuggestionsVisibility(false); // Hide monster suggestions when typing
-                dropBaseDropRateInput.removeAttribute('disabled'); // Enable manual input
+                setMonsterSuggestionsVisibility(false);
+                dropBaseDropRateInput.removeAttribute('disabled');
 
                 let normalizedSearchTerm = normalizeString(searchTerm);
                 normalizedSearchTerm = encodeURIComponent(normalizedSearchTerm).replace(/%20/g, '+');
@@ -714,7 +718,7 @@
                 }
 
                 showMessage(dropInfoDiv, translations[currentLanguage].fetching_data, 'info');
-                autocompleteSuggestions.innerHTML = ''; // Clear previous suggestions
+                autocompleteSuggestions.innerHTML = '';
                 autocompleteSuggestions.classList.remove('hidden');
 
                 try {
@@ -769,116 +773,48 @@
                 }
             }
 
-            // Function to handle item selection from autocomplete
+            // Fonction pour gérer la sélection d'un objet depuis l'autocomplétion
             async function selectItem(item) {
                 selectedItem = item;
-                console.log("Selected Item:", selectedItem);
+                console.log("Objet sélectionné:", selectedItem);
                 dropItemNameInput.value = item.name.fr || item.name.en || '';
                 itemIcon.src = item.img || "https://placehold.co/32x32/1f2937/9ca3af?text=?";
                 itemIcon.onerror = function() { this.onerror=null; this.src='https://placehold.co/32x32/1f2937/9ca3af?text=?'; };
                 hideMessage(dropErrorDiv);
                 hideMessage(dropResultDiv);
                 hideMessage(dropInfoDiv);
-                dropBaseDropRateInput.value = ''; // Clear previous value
-                dropBaseDropRateInput.removeAttribute('disabled'); // Ensure it's enabled for manual input initially
+                dropBaseDropRateInput.value = '';
+                dropBaseDropRateInput.removeAttribute('disabled');
 
-                // Call the displayMonsterDropOptions directly with the selected item
                 await displayMonsterDropOptions(selectedItem);
             }
             
-            // Drop Rate Calculator Logic
-            window.calculateDropRate = function() {
-                hideMessage(dropResultDiv);
-                hideMessage(dropErrorDiv);
-                hideMessage(dropInfoDiv);
+            // Écouteurs d'événements
+            // languageSelector.addEventListener('change', (e) => setLanguage(e.target.value)); // Supprimé
 
-                const itemName = dropItemNameInput.value.trim();
-                const baseDropRate = parseFloat(dropBaseDropRateInput.value);
-                let playerPP = parseFloat(dropPlayerPPInput.value);
-                const challengeBonus = parseFloat(dropChallengeBonusInput.value);
-                let anomalyBonus = parseFloat(dropAnomalyBonusInput.value);
-                const isAnkamaShieldActive = ankamaShieldToggle.checked;
-
-                if (isNaN(baseDropRate) || isNaN(playerPP) || isNaN(challengeBonus) || isNaN(anomalyBonus) || baseDropRate <= 0 || playerPP < 100 || anomalyBonus < 0 || anomalyBonus > 120) {
-                    showMessage(dropErrorDiv, translations[currentLanguage].drop_error_message, 'error');
-                    return;
-                }
-
-                if (itemName === "") {
-                    showMessage(dropErrorDiv, translations[currentLanguage].drop_error_item_name, 'error');
-                    return;
-                }
-
-                // PP Multiplier formula based on Dofus mechanics (simplified)
-                let ppMultiplier;
-                if (playerPP < 0) { // Should not happen with min="100" but as a safeguard
-                    ppMultiplier = 1;
-                } else {
-                    const exponent = (250 - playerPP) / 85;
-                    ppMultiplier = 0.74 + (1.755 / (1 + Math.exp(exponent)));
-                    ppMultiplier = Math.min(ppMultiplier, 2.5); // Cap at 2.5 (250% of base)
-                }
-
-                let effectiveDropRate = baseDropRate * ppMultiplier * (1 + challengeBonus / 100);
-
-                if (anomalyBonus > 0) {
-                    effectiveDropRate *= (1 + anomalyBonus / 100);
-                }
-
-                if (isAnkamaShieldActive) {
-                    effectiveDropRate *= (1 + 5 / 100); // +5% bonus from Ankama Shield
-                }
-
-                let chanceDenominator = 0;
-                if (effectiveDropRate > 0) {
-                    chanceDenominator = 100 / effectiveDropRate;
-                } else {
-                    chanceDenominator = Infinity; // Avoid division by zero
-                }
-
-                dropResultDiv.innerHTML = `
-                    <p class="font-bold">${translations[currentLanguage].drop_result_prefix} "<strong>${itemName}</strong>" :</p>
-                    <ul class="list-none mt-2">
-                        <li class="text-lg mt-2"><strong>${translations[currentLanguage].drop_estimated_rate} : <span class="text-teal-300">${effectiveDropRate.toFixed(2)}%</span></strong></li>
-                        <li class="text-gray-400 italic mt-4"><em>${translations[currentLanguage].drop_average_combats} <span class="font-semibold">${chanceDenominator.toFixed(0)}</span> !</em></li>
-                    </ul>
-                `;
-                dropResultDiv.classList.remove('hidden');
-            };
-
-            // Event Listeners
-            languageSelector.addEventListener('change', (e) => setLanguage(e.target.value));
-            
-            // Debounce function for autocomplete to limit API calls
             let debounceTimer;
             dropItemNameInput.addEventListener('input', () => {
                 clearTimeout(debounceTimer);
                 debounceTimer = setTimeout(() => {
                     fetchItemsForAutocomplete(dropItemNameInput.value);
-                }, 300); // 300ms delay
+                }, 300);
             });
 
-            // Hide suggestions when clicking outside
             document.addEventListener('click', (e) => {
                 if (!dropItemNameInput.contains(e.target) && !autocompleteSuggestions.contains(e.target)) {
                     autocompleteSuggestions.classList.add('hidden');
                 }
-                // Keep monster suggestions visible until an option is chosen or item name is cleared
             });
 
-            // Initial Load
-            const savedLang = localStorage.getItem('dofusDropLang') || 'fr';
-            setLanguage(savedLang);
+            // Chargement initial
+            // La langue est maintenant fixée à 'fr'
+            // setLanguage('fr'); // Plus besoin d'appeler ici, car currentLanguage est initialisé globalement
 
-            // Set the version information in the footer
             if (versionInfoElement) {
                 versionInfoElement.textContent = translations[currentLanguage].version_info;
             }
 
-            // Perform initial search for the default item on page load
-            // This will now trigger the new monster fetching logic
-            dropItemNameInput.value = ''; // Clear on initial load
-            // No initial fetch, wait for user input
+            dropItemNameInput.value = ''; // Effacer au chargement initial
         });
     </script>
 
