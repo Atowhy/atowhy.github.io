@@ -267,13 +267,13 @@
     <script>
         // Déclaration des variables globales ou semi-globales
         let currentLanguage = 'fr'; // La langue par défaut est le français
-        let selectedItem = null; // Pour stocker l'objet item actuellement sélectionné
-        const DOFUSDB_API_BASE_URL = 'https://api.dofusdb.fr';
 
         // Déclaration des éléments DOM pour un accès facile
         let dropItemNameInput, dropBaseDropRateInput, dropPlayerPPInput, dropChallengeBonusInput,
             dropAnomalyBonusInput, ankamaShieldToggle, dropResultDiv, dropErrorDiv, dropInfoDiv,
             itemIcon, autocompleteSuggestions, monsterDropSuggestions, monsterDropList, versionInfoElement;
+
+        const DOFUSDB_API_BASE_URL = 'https://api.dofusdb.fr';
 
         // Définition des traductions
         const translations = {
@@ -281,7 +281,7 @@
                 btn_back_home: "← Retour à l'accueil",
                 signature: "Apps by Ato",
                 disclaimer: "Dofus et toutes les images associées utilisées sur ce site sont la propriété d'Ankama",
-                version_info: "Version 2.0.22 - Juillet 2025",
+                version_info: "Version 2.0.23 - Juillet 2025", // Updated version
                 drop_calculator_main_title: "Calculateur de Taux de Butin",
                 drop_calculator_subtitle: "Estimez vos chances d'obtenir des objets !",
                 drop_calculator_form_title: "Calculer le Taux de Butin",
@@ -300,124 +300,30 @@
                 drop_error_item_name: "Veuillez entrer un nom pour l'objet.",
                 item_not_found: "Objet non trouvé.",
                 fetching_data: "Recherche en cours...",
-                no_base_drop_rate: "Aucun taux de butin de base trouvé pour cet objet via les monstres. Veuillez l'entrer manuellement.",
-                label_select_monster_drop: "Sélectionnez un monstre pour pré-remplir le taux de butin :",
-                no_monster_drops: "Aucun monstre ne semble laisser tomber cet objet, ou les données ne sont pas disponibles."
-            },
-            en: {
-                btn_back_home: "← Back to Home",
-                signature: "Apps by Ato",
-                disclaimer: "Dofus and any related images used on this website are the properties of Ankama",
-                version_info: "Version 2.0.22 - July 2025",
-                drop_calculator_main_title: "Drop Rate Calculator",
-                drop_calculator_subtitle: "Estimate your chances of obtaining items!",
-                drop_calculator_form_title: "Calculate Drop Rate",
-                label_item_name: "Item Name (Ex: Broken Chafer Helmet):",
-                label_item_name_placeholder: "Broken Chafer Helmet",
-                label_base_drop_rate: "Base Drop Rate (%) (Ex: 8.4 for Broken Chafer Helmet):",
-                label_player_pp: "Your Prospecting (PP):",
-                label_challenge_bonus: "Challenge Bonus (%) (Ex: 50 for a successful challenge):",
-                label_anomaly_bonus: "Anomaly % (0-120%):",
-                label_ankama_shield: "Activate Ankama Shield (+5% bonus)",
-                btn_calculate_drop_rate: "Calculate Drop Rate",
-                drop_result_prefix: "For the item",
-                drop_estimated_rate: "Estimated drop rate",
-                drop_average_combats: "You have 1 chance in",
-                drop_error_message: "Please enter valid numeric values for base rate, prospecting (min 100), challenge bonus (min 0), and anomaly bonus (between 0 and 120).",
-                drop_error_item_name: "Please enter an item name.",
-                item_not_found: "Item not found.",
-                fetching_data: "Searching...",
-                no_base_drop_rate: "No base drop rate found for this item via monsters. Please enter it manually.",
-                label_select_monster_drop: "Select a monster to pre-fill the drop rate:",
-                no_monster_drops: "No monsters seem to drop this item, or data is unavailable."
-            },
-            es: {
-                btn_back_home: "← Volver al Inicio",
-                signature: "Apps by Ato",
-                disclaimer: "Dofus y cualquier imagen relacionada utilizada en este sitio web son propiedad de Ankama",
-                version_info: "Versión 2.0.22 - Julio 2025",
-                drop_calculator_main_title: "Calculadora de Tasa de Drop",
-                drop_calculator_subtitle: "¡Estima tus posibilidades de conseguir objetos!",
-                drop_calculator_form_title: "Calcular Tasa de Drop",
-                label_item_name: "Nombre del objeto (Ej: Casco Roto de Chafer):",
-                label_item_name_placeholder: "Casco Roto de Chafer",
-                label_base_drop_rate: "Tasa de drop base (%) (Ej: 8.4 para Casco Roto de Chafer):",
-                label_player_pp: "Tu Prospección (PP):",
-                label_challenge_bonus: "Bono de desafío (%) (Ej: 50 para un desafío exitoso):",
-                label_anomaly_bonus: "% Anomalía (0-120%):",
-                label_ankama_shield: "Activar Ankama Shield (+5% bonus)",
-                btn_calculate_drop_rate: "Calcular Tasa de Drop",
-                drop_result_prefix: "Para el objeto",
-                drop_estimated_rate: "Tasa de drop estimada",
-                drop_average_combats: "Tienes 1 oportunidad entre",
-                drop_error_message: "Por favor, introduce valores numéricos válidos para la tasa base, la prospección (mín. 100), el bono de desafío (mín. 0) y el bono de anomalía (entre 0 et 120).",
-                drop_error_item_name: "Por favor, introduce un nombre para el objeto.",
-                item_not_found: "Objeto no encontrado.",
-                fetching_data: "Buscando...",
-                no_base_drop_rate: "No se encontró una tasa de drop base para este objeto a través de monstruos. Por favor, introdúcela manualmente.",
-                label_select_monster_drop: "Selecciona un monstro para pre-remplir le taux de butin :",
-                no_monster_drops: "Ningún monstro parece soltar este objeto, o los datos no están disponibles."
-            },
-            'pt-br': {
-                btn_back_home: "← Voltar ao Início",
-                signature: "Apps by Ato",
-                disclaimer: "Dofus e quaisquer images relacionadas usadas neste site são propriedade da Ankama",
-                version_info: "Versão 2.0.22 - Julho 2025",
-                drop_calculator_main_title: "Calculadora Taxa de Drop",
-                drop_calculator_subtitle: "Estime suas chances de obter itens!",
-                drop_calculator_form_title: "Calcular Taxa de Drop",
-                label_item_name: "Nome do Item (Ex: Capacete Quebrado de Chafer):",
-                label_item_name_placeholder: "Capacete Quebrado de Chafer",
-                label_base_drop_rate: "Taxa de Drop Base (%) (Ex: 8.4 para Capacete Quebrado de Chafer):",
-                label_player_pp: "Sua Prospecção (PP):",
-                label_challenge_bonus: "Bônus de Desafio (%) (Ex: 50 para um desafio bem-sucedido):",
-                label_anomaly_bonus: "% Anomalia (0-120%):",
-                label_ankama_shield: "Ativar Ankama Shield (+5% bônus)",
-                btn_calculate_drop_rate: "Calcular Taxa de Drop",
-                drop_result_prefix: "Para o item",
-                drop_estimated_rate: "Taxa de drop estimada",
-                drop_average_combats: "Você tem 1 chance em",
-                drop_error_message: "Por favor, insira valores numéricos válidos para a taxa base, prospecção (mín. 100), bônus de desafio (mín. 0) e bônus de anomalia (entre 0 e 120).",
-                item_not_found: "Item não encontrado.",
-                fetching_data: "Pesquisando...",
-                no_base_drop_rate: "Nenhuma taxa de drop base encontrada para este item via monstros. Por favor, insira-a manualmente.",
-                label_select_monster_drop: "Selecione um monstro para preencher a taxa de drop:",
-                no_monster_drops: "Nenhum monstro parece dropar este item, ou os dados não estão disponíveis."
-            },
-            it: {
-                btn_back_home: "← Torna alla Home",
-                signature: "Apps by Ato",
-                disclaimer: "Dofus e qualsiasi image correlata utilizzata su questo site Web è di proprietà di Ankama",
-                version_info: "Versão 2.0.22 - Luglio 2025",
-                drop_calculator_main_title: "Calcolatore Tasso di Drop",
-                drop_calculator_subtitle: "Stima le tue possibilità di ottenere oggetti!",
-                drop_calculator_form_title: "Calcola Tasso di Drop",
-                label_item_name: "Nome dell'oggetto (Es: Elmo Rotto di Chafer):",
-                label_item_name_placeholder: "Elmo Rotto di Chafer",
-                label_base_drop_rate: "Tasso di drop base (%) (Es: 8.4 per Elmo Rotto di Chafer):",
-                label_player_pp: "La tua Prospezione (PP):",
-                label_challenge_bonus: "Bonus di sfida (%) (Es: 50 per una sfida riuscita):",
-                label_anomaly_bonus: "% Anomalia (0-120%):",
-                label_ankama_shield: "Attiva Ankama Shield (+5% bonus)",
-                btn_calculate_drop_rate: "Calcola Tasso di Drop",
-                drop_result_prefix: "Per l'oggetto",
-                drop_estimated_rate: "Tasso di drop stimato",
-                drop_average_combats: "Hai 1 possibilità su",
-                drop_error_message: "Inserisci valori numerici validi per il tasso base, la prospezione (min 100), il bonus di sfida (min 0) e il bonus di anomalia (tra 0 e 120).",
-                item_not_found: "Oggetto non trovato.",
-                fetching_data: "Ricerca in corso...",
-                no_base_drop_rate: "Nessun tasso di drop base trovato per questo oggetto tramite i mostri. Inseriscilo manualmente.",
-                label_select_monster_drop: "Seleziona un monstro per precompilare il tasso di drop:",
-                no_monster_drops: "Nessun mostro sembra rilasciare questo oggetto, o i dati non sono disponibili."
+                no_base_drop_rate: "Aucun monstre ne semble laisser tomber cet objet, ou les données ne sont pas disponibles."
             }
+            // Removed other languages as per user request
         };
 
+        // Fonction utilitaire pour afficher les messages
+        function showMessage(element, message, type) {
+            element.innerHTML = `<p>${message}</p>`;
+            element.className = `message-box ${type}`;
+            element.classList.remove('hidden');
+        }
+
+        // Fonction utilitaire pour masquer les messages
+        function hideMessage(element) {
+            element.classList.add('hidden');
+            element.innerHTML = '';
+        }
+
         // Fonction pour gérer le réglage de la langue et la traduction
+        // Cette fonction est désormais simplifiée car le sélecteur de langue est retiré
         function setLanguage(lang) {
             currentLanguage = lang;
-            localStorage.setItem('dofusDropLang', lang);
+            localStorage.setItem('dofusDropLang', lang); // Toujours stocker la langue, même si elle est fixe
             document.documentElement.lang = lang;
-            // languageSelector est supprimé, donc plus besoin de le récupérer ici
 
             document.querySelectorAll('[data-translate-key]').forEach(element => {
                 const key = element.getAttribute('data-translate-key');
@@ -426,14 +332,12 @@
                 }
             });
 
-            // Pour les placeholders, utiliser data-translate-key-placeholder
             document.querySelectorAll('[data-translate-key-placeholder]').forEach(element => {
                 const key = element.getAttribute('data-translate-key-placeholder');
                 if (translations[lang] && translations[lang][key]) {
                     element.placeholder = translations[lang][key];
                 }
             });
-            // Masquer les messages lors du changement de langue pour éviter les incohérences
             hideMessage(dropResultDiv);
             hideMessage(dropErrorDiv);
             hideMessage(dropInfoDiv);
@@ -441,18 +345,6 @@
 
         // Logique du Calculateur de Taux de Butin (rendue globale)
         window.calculateDropRate = function() {
-            // Récupération des éléments DOM à l'intérieur de la fonction si nécessaire,
-            // ou s'assurer qu'ils sont déjà globalement accessibles.
-            const dropItemNameInput = document.getElementById('dropItemName');
-            const dropBaseDropRateInput = document.getElementById('dropBaseDropRate');
-            const dropPlayerPPInput = document.getElementById('dropPlayerPP');
-            const dropChallengeBonusInput = document.getElementById('dropChallengeBonus');
-            const dropAnomalyBonusInput = document.getElementById('dropAnomalyBonus');
-            const ankamaShieldToggle = document.getElementById('ankamaShieldToggle');
-            const dropResultDiv = document.getElementById('drop-result');
-            const dropErrorDiv = document.getElementById('drop-error-message');
-            const dropInfoDiv = document.getElementById('drop-info-message');
-
             hideMessage(dropResultDiv);
             hideMessage(dropErrorDiv);
             hideMessage(dropInfoDiv);
@@ -532,24 +424,14 @@
 
             // La variable currentLanguage est maintenant globale
 
+            const DOFUSDB_API_BASE_URL = 'https://api.dofusdb.fr';
+
             // Fonction utilitaire pour normaliser une chaîne pour la recherche de slug
             function normalizeString(str) {
                 str = str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 str = str.toLowerCase();
                 str = str.replace(/[^a-z0-9\s]/g, "");
                 return str;
-            }
-
-            // Fonctions utilitaires pour afficher/masquer les messages
-            function showMessage(element, message, type) {
-                element.innerHTML = `<p>${message}</p>`;
-                element.className = `message-box ${type}`;
-                element.classList.remove('hidden');
-            }
-
-            function hideMessage(element) {
-                element.classList.add('hidden');
-                element.innerHTML = '';
             }
 
             // Fonction pour contrôler la visibilité de la boîte de suggestions de monstres
@@ -808,7 +690,7 @@
 
             // Chargement initial
             // La langue est maintenant fixée à 'fr'
-            // setLanguage('fr'); // Plus besoin d'appeler ici, car currentLanguage est initialisé globalement
+            setLanguage('fr'); // Appeler setLanguage pour initialiser les textes
 
             if (versionInfoElement) {
                 versionInfoElement.textContent = translations[currentLanguage].version_info;
