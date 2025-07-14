@@ -313,6 +313,8 @@
 
             // Function to fetch Dofus items from local JSON
             async function fetchDofusItems() {
+                dropErrorDiv.innerHTML = `<p>${translations[currentLanguage].fetching_data}</p>`;
+                dropErrorDiv.classList.remove('hidden');
                 try {
                     const response = await fetch('ressources.json');
                     if (!response.ok) {
@@ -329,10 +331,12 @@
                     } else {
                         itemIcon.src = "https://placehold.co/32x32/1f2937/9ca3af?text=?"; // Fallback
                     }
+                    dropErrorDiv.classList.add('hidden'); // Hide fetching message on success
+                    dropErrorDiv.innerHTML = ''; // Clear fetching message
 
                 } catch (error) {
                     console.error("Could not load ressources.json:", error);
-                    dropErrorDiv.innerHTML = `<p>Erreur lors du chargement des données des objets. Veuillez réessayer plus tard.</p>`;
+                    dropErrorDiv.innerHTML = `<p>${translations[currentLanguage].drop_error_message}</p>`;
                     dropErrorDiv.classList.remove('hidden');
                 }
             }
@@ -367,9 +371,16 @@
                 autocompleteSuggestions.innerHTML = ''; // Clear previous suggestions
                 autocompleteSuggestions.classList.add('hidden'); // Hide suggestions by default
 
+                // Clear any previous item not found error when user starts typing again
+                if (dropErrorDiv.textContent.includes(translations[currentLanguage].item_not_found)) {
+                    dropErrorDiv.classList.add('hidden');
+                    dropErrorDiv.innerHTML = '';
+                }
+
                 if (searchTerm.length >= 3) { // Start search after 3 characters
+                    // Filter items, ensuring 'item' and 'item.nom' are not undefined
                     const filteredItems = allDofusItems.filter(item => 
-                        item.nom.toLowerCase().includes(searchTerm)
+                        item && item.nom && item.nom.toLowerCase().includes(searchTerm)
                     ).slice(0, 10); // Limit to top 10 suggestions
 
                     if (filteredItems.length > 0) {
@@ -400,6 +411,7 @@
                         });
                         autocompleteSuggestions.classList.remove('hidden');
                     } else {
+                        // Display item not found only if no suggestions after 3 chars
                         dropErrorDiv.innerHTML = `<p>${translations[currentLanguage].item_not_found}</p>`;
                         dropErrorDiv.classList.remove('hidden');
                     }
@@ -479,8 +491,7 @@
 
             // Event Listeners
             languageSelector.addEventListener('change', (e) => setLanguage(e.target.value));
-            dropItemNameInput.addEventListener('input', handleItemSearch); // Autocomplete on input
-            // Removed searchItemBtn.addEventListener('click', searchItem); as it's replaced by autocomplete
+            dropItemNameInput.addEventListener('input', handleItemSearch);
 
             // Initial Load
             const savedLang = localStorage.getItem('dofusDropLang') || 'fr';
