@@ -281,7 +281,7 @@
                 btn_back_home: "← Retour à l'accueil",
                 signature: "Apps by Ato",
                 disclaimer: "Dofus et toutes les images associées utilisées sur ce site sont la propriété d'Ankama",
-                version_info: "Version 2.0.25 - Juillet 2025", // Updated version
+                version_info: "Version 2.0.26 - Juillet 2025", // Updated version
                 drop_calculator_main_title: "Calculateur de Taux de Butin",
                 drop_calculator_subtitle: "Estimez vos chances d'obtenir des objets !",
                 drop_calculator_form_title: "Calculer le Taux de Butin",
@@ -607,18 +607,9 @@
 
                 try {
                     const baseUrl = 'https://api.dofusdb.fr/items';
-                    // Updated paramsArray to use typeId[$in][] for specific resource types
-                    const resourceTypeIds = [
-                        57, 58, // Laine, Graine
-                        23, 24, 25, 26, 27, 28, 29, // Bois, Minerai, Alliage, Pierre précieuse, Poudre, Fleur, Feuille
-                        106, 107, // Champignon, Céréale
-                        59, 60, 61, 62, 63, 64, 65, // Poil, Plume, Étoffe, Cuir, Peau, Viande, Poisson
-                        105, // Clé
-                        66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, // Diverses parties de monstre, ressources de récolte, etc. (Queue, Aile, Patte, Œil, Dent, Griffe, Écaille, Carapace, Corne, Gelée, Sève, Gland, Écorce, Racine, Bave, Sang, Os, Cendre, Huile, Pierre, Métaria, Légume, Fruit, Fleur de givre, Bois de givre, Minerai de givre, Alliage de givre, Pierre de givre, Poudre de givre, Feuille de givre, Graine de givre, Laine de givre, Étoffe de givre, Cuir de givre, Peau de givre, Viande de givre, Poisson de givre)
-                        109, 110, 111, 112, 113, 114, 115, 116, // Galet, Substrat, Préparation, Rune de transcendance, Ressource des Songes, Ressource de combat, Matériel de mégaltération, Ressources des Anomalies Temporelles
-                        103 // Liquide (peut être une ressource générale)
-                    ];
+                    // Reverted paramsArray to its state before resource filtering
                     let paramsArray = [
+                        `typeId[$ne]=203`, // Exclude quest items
                         `$sort=-id`,
                         `slug.fr[$search]=${normalizedSearchTerm}`,
                         `level[$gte]=0`,
@@ -626,17 +617,11 @@
                         `$skip=0`,
                         `lang=fr`
                     ];
-                    // Add typeId[$in][] for each resource type ID
-                    resourceTypeIds.forEach(id => {
-                        paramsArray.push(`typeId[$in][]=${id}`);
-                    });
-                    // Keep typeId[$ne]=203 to exclude quest items, just in case
-                    paramsArray.push(`typeId[$ne]=203`);
-
+                    
                     const queryString = paramsArray.join('&');
                     const fullUrl = `${baseUrl}?${queryString}`;
                     
-                    console.log("Requête API envoyée (filtrée ressources):", fullUrl); // Log the filtered URL
+                    console.log("Requête API envoyée (recherche générale):", fullUrl); // Log the general search URL
 
                     const response = await fetch(fullUrl);
                     const data = await response.json();
