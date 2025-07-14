@@ -1,504 +1,148 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculateur de Taux de Butin</title>
-    <link rel="icon" type="image/png" href="images/tifoux.png">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #111827; /* bg-gray-900 */
-        }
-        .main-container::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url('images/BG_01.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            opacity: 0.1;
-            z-index: -1;
-        }
-        .card-bg {
-            background-color: rgba(31, 41, 55, 0.85); /* bg-gray-800 with 85% opacity */
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .placeholder-custom::placeholder {
-            color: #9ca3af;
-        }
+    <title>Dofus Droprate Calculator</title>
+    <link rel="stylesheet" href="style.css"> </head>
+<body>
+    <h1>Dofus Droprate Calculator</h1>
 
-        /* Styles pour les messages d'erreur/succès, adaptés au thème sombre */
-        .message-box {
-            padding: 1rem;
-            margin-top: 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 500;
-        }
-        .message-box.error {
-            background-color: rgba(239, 68, 68, 0.1); /* Red-500 avec opacité */
-            color: #ef4444; /* text-red-500 */
-            border-left: 4px solid #ef4444; /* border-red-500 */
-        }
-        .message-box.success {
-            background-color: rgba(20, 184, 166, 0.1); /* Teal-500 avec opacité */
-            color: #14b8a6; /* text-teal-500 */
-            border-left: 4px solid #14b8a6; /* border-teal-500 */
-        }
+    <label for="itemSearchInput">Search Item:</label>
+    <input type="text" id="itemSearchInput" value="Iron">
+    <button id="searchButton">Search</button>
 
-        /* Styles pour l'autocomplétion */
-        .autocomplete-suggestions {
-            position: absolute;
-            background-color: rgba(31, 41, 55, 0.95); /* Slightly more opaque than card-bg */
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 0.5rem;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 100;
-            width: calc(100% - 0.5rem); /* Adjust width to match input */
-            left: 0.25rem; /* Align with input padding */
-            top: 100%; /* Position below the input */
-            margin-top: 0.25rem;
-        }
-        .autocomplete-suggestion-item {
-            padding: 0.75rem 1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            transition: background-color 0.2s ease;
-        }
-        .autocomplete-suggestion-item:hover {
-            background-color: rgba(20, 184, 166, 0.2); /* teal-500 with opacity */
-        }
-        .autocomplete-suggestion-item img {
-            width: 32px;
-            height: 32px;
-            object-fit: contain;
-            border-radius: 0.25rem;
-            background-color: rgba(255, 255, 255, 0.05); /* subtle background for image */
-        }
-    </style>
-</head>
-<body class="text-white antialiased">
-
-    <div class="main-container relative min-h-screen">
-        <div class="relative z-10 container mx-auto p-4 md:p-8 max-w-md min-h-screen flex flex-col">
-            
-            <div class="flex justify-between items-center mb-4">
-                <!-- Lien de retour à la page d'accueil du GitHub Pages -->
-                <a href="https://atowhy.github.io/" class="text-teal-400 hover:text-teal-300" data-translate-key="btn_back_home">&larr; Retour à l'accueil</a>
-                <select id="language-selector" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-1 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
-                    <option value="fr">🇫🇷 Français</option>
-                    <option value="en">🇬🇧 English</option>
-                    <option value="es">🇪🇸 Español</option>
-                    <option value="pt-br">🇧🇷 Português (BR)</option>
-                    <option value="it">🇮🇹 Italiano</option>
-                </select>
-            </div>
-
-            <header class="text-center mb-8">
-                <h1 class="text-3xl md:text-4xl font-bold text-teal-400" data-translate-key="drop_calculator_main_title">Calculateur de Taux de Butin</h1>
-                <p class="text-gray-400 mt-2" data-translate-key="drop_calculator_subtitle">Estimez vos chances d'obtenir des objets !</p>
-            </header>
-
-            <!-- Contenu du Calculateur de Taux de Butin -->
-            <div id="content-drop-calculator">
-                <div class="card-bg p-6 rounded-2xl shadow-lg mb-8">
-                    <h2 class="text-xl font-semibold mb-4 text-white" data-translate-key="drop_calculator_form_title">Calculer le Taux de Butin</h2>
-                    
-                    <div class="mb-4 relative">
-                        <label for="dropItemName" class="block text-sm font-medium text-gray-300 mb-1" data-translate-key="label_item_name">Nom de l'objet (Ex: Casque Cassé du Chafer):</label>
-                        <div class="flex items-center gap-2">
-                            <img id="itemIcon" src="https://placehold.co/32x32/1f2937/9ca3af?text=?" alt="Icône de l'objet" class="h-8 w-8 rounded-md object-contain border border-gray-600">
-                            <input type="text" id="dropItemName" value="Casque Cassé du Chafer" class="flex-grow bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition placeholder-custom">
-                        </div>
-                        <div id="autocompleteSuggestions" class="autocomplete-suggestions hidden"></div>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="dropBaseDropRate" class="block text-sm font-medium text-gray-300 mb-1" data-translate-key="label_base_drop_rate">Taux de butin de base (%) (Ex: 8.4 pour Casque Cassé du Chafer):</label>
-                        <input type="number" id="dropBaseDropRate" value="8.4" min="0.1" step="0.1" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition placeholder-custom">
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="dropPlayerPP" class="block text-sm font-medium text-gray-300 mb-1" data-translate-key="label_player_pp">Votre Prospection (PP):</label>
-                        <input type="number" id="dropPlayerPP" value="100" min="100" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition placeholder-custom">
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="dropChallengeBonus" class="block text-sm font-medium text-gray-300 mb-1" data-translate-key="label_challenge_bonus">Bonus de défi (%) (Ex: 50 pour un défi réussi):</label>
-                        <input type="number" id="dropChallengeBonus" value="50" min="0" step="1" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition placeholder-custom">
-                    </div>
-
-                    <!-- Champ pour le % Anomalie -->
-                    <div class="mb-4">
-                        <label for="dropAnomalyBonus" class="block text-sm font-medium text-gray-300 mb-1" data-translate-key="label_anomaly_bonus">% Anomalie (0-120%):</label>
-                        <input type="number" id="dropAnomalyBonus" value="0" min="0" max="120" step="1" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition placeholder-custom">
-                    </div>
-
-                    <!-- Toggle pour Ankama Shield -->
-                    <div class="mb-6 flex items-center">
-                        <input type="checkbox" id="ankamaShieldToggle" checked class="h-4 w-4 text-teal-600 bg-gray-700 border-gray-600 rounded focus:ring-teal-500">
-                        <label for="ankamaShieldToggle" class="ml-2 block text-sm font-medium text-gray-300" data-translate-key="label_ankama_shield">Activer Ankama Shield (+5% bonus)</label>
-                    </div>
-
-                    <button onclick="calculateDropRate()" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg transition-transform transform hover:scale-105 shadow-md" data-translate-key="btn_calculate_drop_rate">
-                        Calculer le Taux de Butin
-                    </button>
-
-                    <div id="drop-result" class="message-box success hidden">
-                        <!-- Le résultat sera affiché ici -->
-                    </div>
-                    <div id="drop-error-message" class="message-box error hidden">
-                        <!-- Les messages d'erreur seront affichés ici -->
-                    </div>
-                </div>
-            </div>
-            
-            <footer class="text-center text-gray-500 text-sm mt-auto pt-12 pb-4">
-                <img src="images/LogoDofus.webp" alt="Logo Dofus" class="h-12 mx-auto mb-2 opacity-50">
-                <p data-translate-key="signature">Apps by Ato</p>
-                <p class="text-xs text-gray-600 mt-4" data-translate-key="disclaimer">Dofus and any related images used on this website are the properties of Ankama</p>
-            </footer>
-        </div>
+    <div id="itemInfo">
+        <h2>Item Details:</h2>
+        <p>Item Name: <span id="itemName">N/A</span></p>
+        <p>Item ID: <span id="itemId">N/A</span></p>
+        <h3>Monsters that drop this item:</h3>
+        <ul id="monsterList">
+            <li>No data yet.</li>
+        </ul>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const translations = {
-                fr: {
-                    btn_back_home: "← Retour à l'accueil",
-                    signature: "Apps by Ato",
-                    disclaimer: "Dofus et toutes les images associées utilisées sur ce site sont la propriété d'Ankama",
-                    drop_calculator_main_title: "Calculateur de Taux de Butin",
-                    drop_calculator_subtitle: "Estimez vos chances d'obtenir des objets !",
-                    drop_calculator_form_title: "Calculer le Taux de Butin",
-                    label_item_name: "Nom de l'objet (Ex: Casque Cassé du Chafer):",
-                    label_base_drop_rate: "Taux de butin de base (%) (Ex: 8.4 pour Casque Cassé du Chafer):",
-                    label_player_pp: "Votre Prospection (PP):",
-                    label_challenge_bonus: "Bonus de défi (%) (Ex: 50 pour un défi réussi):",
-                    label_anomaly_bonus: "% Anomalie (0-120%):",
-                    label_ankama_shield: "Activer Ankama Shield (+5% bonus)",
-                    btn_calculate_drop_rate: "Calculer le Taux de Butin",
-                    btn_search_item: "Rechercher", // This button is now removed from HTML, but kept in translations for consistency if needed elsewhere.
-                    drop_result_prefix: "Pour l'objet",
-                    drop_estimated_rate: "Taux de butin estimé",
-                    drop_average_combats: "Vous avez 1 chance sur",
-                    drop_error_message: "Veuillez entrer des valeurs numériques valides pour le taux de base, la prospection (min 100), le bonus de défi (min 0) et le bonus d'anomalie (entre 0 et 120).",
-                    drop_error_item_name: "Veuillez entrer un nom pour l'objet.",
-                    item_not_found: "Objet non trouvé. Veuillez vérifier le nom ou entrer le taux de base manuellement.",
-                    fetching_data: "Recherche en cours...",
-                    no_base_drop_rate: "Le taux de butin de base n'est pas disponible pour cet objet dans la base de données. Veuillez l'entrer manuellement."
-                },
-                en: {
-                    btn_back_home: "← Back to Home",
-                    signature: "Apps by Ato",
-                    disclaimer: "Dofus and any related images used on this website are the properties of Ankama",
-                    drop_calculator_main_title: "Drop Rate Calculator",
-                    drop_calculator_subtitle: "Estimate your chances of obtaining items!",
-                    drop_calculator_form_title: "Calculate Drop Rate",
-                    label_item_name: "Item Name (Ex: Broken Chafer Helmet):",
-                    label_base_drop_rate: "Base Drop Rate (%) (Ex: 8.4 for Broken Chafer Helmet):",
-                    label_player_pp: "Your Prospecting (PP):",
-                    label_challenge_bonus: "Challenge Bonus (%) (Ex: 50 for a successful challenge):",
-                    label_anomaly_bonus: "Anomaly % (0-120%):",
-                    label_ankama_shield: "Activate Ankama Shield (+5% bonus)",
-                    btn_calculate_drop_rate: "Calculate Drop Rate",
-                    btn_search_item: "Search",
-                    drop_result_prefix: "For the item",
-                    drop_estimated_rate: "Estimated drop rate",
-                    drop_average_combats: "You have 1 chance in",
-                    drop_error_message: "Please enter valid numeric values for base rate, prospecting (min 100), challenge bonus (min 0), and anomaly bonus (between 0 and 120).",
-                    drop_error_item_name: "Please enter an item name.",
-                    item_not_found: "Item not found. Please check the name or enter the base rate manually.",
-                    fetching_data: "Searching...",
-                    no_base_drop_rate: "Base drop rate is not available for this item in the database. Please enter it manually."
-                },
-                es: {
-                    btn_back_home: "← Volver al Inicio",
-                    signature: "Apps by Ato",
-                    disclaimer: "Dofus y cualquier imagen relacionada utilizada en este sitio web son propiedad de Ankama",
-                    drop_calculator_main_title: "Calculadora de Tasa de Drop",
-                    drop_calculator_subtitle: "¡Estima tus posibilidades de conseguir objetos!",
-                    drop_calculator_form_title: "Calcular Tasa de Drop",
-                    label_item_name: "Nombre del objeto (Ej: Casco Roto de Chafer):",
-                    label_base_drop_rate: "Tasa de drop base (%) (Ej: 8.4 para Casco Roto de Chafer):",
-                    label_player_pp: "Tu Prospección (PP):",
-                    label_challenge_bonus: "Bono de desafío (%) (Ej: 50 para un desafío exitoso):",
-                    label_anomaly_bonus: "% Anomalía (0-120%):",
-                    label_ankama_shield: "Activar Ankama Shield (+5% bonus)",
-                    btn_calculate_drop_rate: "Calcular Tasa de Drop",
-                    btn_search_item: "Buscar",
-                    drop_result_prefix: "Para el objeto",
-                    drop_estimated_rate: "Tasa de drop estimada",
-                    drop_average_combats: "Tienes 1 oportunidad entre",
-                    drop_error_message: "Por favor, introduce valores numéricos válidos para la tasa base, la prospección (mín. 100), el bono de desafío (mín. 0) y el bono de anomalía (entre 0 y 120).",
-                    drop_error_item_name: "Por favor, introduce un nombre para el objeto.",
-                    item_not_found: "Objeto no encontrado. Por favor, verifica el nombre o introduce la tasa base manualmente.",
-                    fetching_data: "Buscando...",
-                    no_base_drop_rate: "La tasa de drop base no está disponible para este objeto en la base de datos. Por favor, introdúcela manualmente."
-                },
-                'pt-br': {
-                    btn_back_home: "← Voltar ao Início",
-                    signature: "Apps by Ato",
-                    disclaimer: "Dofus e quaisquer imagens relacionadas usadas neste site são propriedade da Ankama",
-                    drop_calculator_main_title: "Calculadora Taxa de Drop",
-                    drop_calculator_subtitle: "Estime suas chances de obter itens!",
-                    drop_calculator_form_title: "Calcular Taxa de Drop",
-                    label_item_name: "Nome do Item (Ex: Capacete Quebrado de Chafer):",
-                    label_base_drop_rate: "Taxa de Drop Base (%) (Ex: 8.4 para Capacete Quebrado de Chafer):",
-                    label_player_pp: "Sua Prospecção (PP):",
-                    label_challenge_bonus: "Bônus de Desafio (%) (Ex: 50 para um desafio bem-sucedido):",
-                    label_anomaly_bonus: "% Anomalia (0-120%):",
-                    label_ankama_shield: "Ativar Ankama Shield (+5% bônus)",
-                    btn_calculate_drop_rate: "Calcular Taxa de Drop",
-                    btn_search_item: "Pesquisar",
-                    drop_result_prefix: "Para o item",
-                    drop_estimated_rate: "Taxa de drop estimada",
-                    drop_average_combats: "Você tem 1 chance em",
-                    drop_error_message: "Por favor, insira valores numéricos válidos para a taxa base, prospecção (mín. 100), bônus de desafio (mín. 0) e bônus de anomalia (entre 0 e 120).",
-                    drop_error_item_name: "Por favor, insira um nome para o item.",
-                    item_not_found: "Item não encontrado. Por favor, verifique o nome ou insira a taxa base manualmente.",
-                    fetching_data: "Pesquisando...",
-                    no_base_drop_rate: "A taxa de drop base não está disponível para este item no banco de dados. Por favor, insira-a manualmente."
-                },
-                it: {
-                    btn_back_home: "← Torna alla Home",
-                    signature: "Apps by Ato",
-                    disclaimer: "Dofus e qualsiasi immagine correlata utilizzata su questo sito Web è di proprietà di Ankama",
-                    drop_calculator_main_title: "Calcolatore Tasso di Drop",
-                    drop_calculator_subtitle: "Stima le tue possibilità di ottenere oggetti!",
-                    drop_calculator_form_title: "Calcola Tasso di Drop",
-                    label_item_name: "Nome dell'oggetto (Es: Elmo Rotto di Chafer):",
-                    label_base_drop_rate: "Tasso di drop base (%) (Es: 8.4 per Elmo Rotto di Chafer):",
-                    label_player_pp: "La tua Prospezione (PP):",
-                    label_challenge_bonus: "Bonus di sfida (%) (Es: 50 per una sfida riuscita):",
-                    label_anomaly_bonus: "% Anomalia (0-120%):",
-                    label_ankama_shield: "Attiva Ankama Shield (+5% bonus)",
-                    btn_calculate_drop_rate: "Calcola Tasso di Drop",
-                    btn_search_item: "Cerca",
-                    drop_result_prefix: "Per l'oggetto",
-                    drop_estimated_rate: "Tasso di drop stimato",
-                    drop_average_combats: "Hai 1 possibilità su",
-                    drop_error_message: "Inserisci valori numerici validi per il tasso base, la prospezione (min 100), il bonus di sfida (min 0) e il bonus di anomalia (tra 0 e 120).",
-                    drop_error_item_name: "Inserisci un nome per l'oggetto.",
-                    item_not_found: "Oggetto non trovato. Per favore, controlla il nome o inserisci il tasso base manualmente.",
-                    fetching_data: "Ricerca in corso...",
-                    no_base_drop_rate: "Il tasso di drop base non è disponibile per questo oggetto nel database. Inseriscilo manualmente."
-                }
-            };
+            const itemSearchInput = document.getElementById('itemSearchInput');
+            const searchButton = document.getElementById('searchButton');
+            const itemNameSpan = document.getElementById('itemName');
+            const itemIdSpan = document.getElementById('itemId');
+            const monsterList = document.getElementById('monsterList');
 
-            // Elements for Drop Calculator
-            const dropItemNameInput = document.getElementById('dropItemName');
-            const dropBaseDropRateInput = document.getElementById('dropBaseDropRate');
-            const dropPlayerPPInput = document.getElementById('dropPlayerPP');
-            const dropChallengeBonusInput = document.getElementById('dropChallengeBonus');
-            const dropAnomalyBonusInput = document.getElementById('dropAnomalyBonus');
-            const ankamaShieldToggle = document.getElementById('ankamaShieldToggle');
-            const dropResultDiv = document.getElementById('drop-result');
-            const dropErrorDiv = document.getElementById('drop-error-message');
-            const languageSelector = document.getElementById('language-selector');
-            const itemIcon = document.getElementById('itemIcon'); // New element for the icon
-            const autocompleteSuggestions = document.getElementById('autocompleteSuggestions'); // New element for suggestions
-
-            let currentLanguage = 'fr';
-            let allDofusItems = []; // To store fetched items
-
-            // Function to fetch Dofus items from local JSON
-            async function fetchDofusItems() {
-                dropErrorDiv.innerHTML = `<p>${translations[currentLanguage].fetching_data}</p>`;
-                dropErrorDiv.classList.remove('hidden');
-                try {
-                    const response = await fetch('ressources.json');
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    allDofusItems = await response.json();
-                    console.log("Dofus items loaded from ressources.json:", allDofusItems);
-
-                    // Attempt to set initial icon for the default item
-                    const defaultItemName = dropItemNameInput.value.trim().toLowerCase();
-                    const defaultItem = allDofusItems.find(item => item.nom.toLowerCase() === defaultItemName);
-                    if (defaultItem && defaultItem.illustration_url) {
-                        itemIcon.src = defaultItem.illustration_url;
-                    } else {
-                        itemIcon.src = "https://placehold.co/32x32/1f2937/9ca3af?text=?"; // Fallback
-                    }
-                    dropErrorDiv.classList.add('hidden'); // Hide fetching message on success
-                    dropErrorDiv.innerHTML = ''; // Clear fetching message
-
-                } catch (error) {
-                    console.error("Could not load ressources.json:", error);
-                    dropErrorDiv.innerHTML = `<p>${translations[currentLanguage].drop_error_message}</p>`;
-                    dropErrorDiv.classList.remove('hidden');
-                }
-            }
+            // DofusDB API base URL
+            const dofusDBApiBase = 'https://api.dofusdb.fr';
             
-            // Translation Function
-            function setLanguage(lang) {
-                currentLanguage = lang;
-                localStorage.setItem('dofusDropLang', lang);
-                document.documentElement.lang = lang;
-                languageSelector.value = lang;
+            // The CORS proxy URL - STILL ESSENTIAL FOR GITHUB PAGES
+            const corsProxy = 'https://corsproxy.io/'; 
 
-                document.querySelectorAll('[data-translate-key]').forEach(element => {
-                    const key = element.getAttribute('data-translate-key');
-                    if (translations[lang] && translations[lang][key]) {
-                        element.textContent = translations[lang][key];
-                    }
-                });
+            searchButton.addEventListener('click', fetchItemData);
 
-                document.querySelectorAll('[data-translate-key-placeholder]').forEach(element => {
-                    const key = element.getAttribute('data-translate-key-placeholder');
-                    if (translations[lang] && translations[lang][key]) {
-                        element.placeholder = translations[lang][key];
-                    }
-                });
-                dropResultDiv.classList.add('hidden');
-                dropErrorDiv.classList.add('hidden');
-            }
-
-            // Function to handle item search and autocomplete
-            function handleItemSearch() {
-                const searchTerm = dropItemNameInput.value.trim().toLowerCase();
-                autocompleteSuggestions.innerHTML = ''; // Clear previous suggestions
-                autocompleteSuggestions.classList.add('hidden'); // Hide suggestions by default
-
-                // Clear any previous item not found error when user starts typing again
-                if (dropErrorDiv.textContent.includes(translations[currentLanguage].item_not_found)) {
-                    dropErrorDiv.classList.add('hidden');
-                    dropErrorDiv.innerHTML = '';
-                }
-
-                if (searchTerm.length >= 3) { // Start search after 3 characters
-                    // Filter items, ensuring 'item' and 'item.nom' are not undefined
-                    const filteredItems = allDofusItems.filter(item => 
-                        item && item.nom && item.nom.toLowerCase().includes(searchTerm)
-                    ).slice(0, 10); // Limit to top 10 suggestions
-
-                    if (filteredItems.length > 0) {
-                        filteredItems.forEach(item => {
-                            const suggestionDiv = document.createElement('div');
-                            suggestionDiv.classList.add('autocomplete-suggestion-item');
-                            suggestionDiv.innerHTML = `
-                                <img src="${item.illustration_url || 'https://placehold.co/32x32/1f2937/9ca3af?text=?'}" alt="Icône de ${item.nom}">
-                                <span>${item.nom}</span>
-                            `;
-                            suggestionDiv.addEventListener('click', () => {
-                                dropItemNameInput.value = item.nom;
-                                itemIcon.src = item.illustration_url || "https://placehold.co/32x32/1f2937/9ca3af?text=?";
-                                // IMPORTANT: ressources.json does NOT contain baseDropRate.
-                                // If you want to populate this, you need to add baseDropRate to your ressources.json
-                                // For now, we'll just show a message if it's not present.
-                                if (item.baseDropRate !== undefined) {
-                                    dropBaseDropRateInput.value = item.baseDropRate;
-                                    dropErrorDiv.classList.add('hidden'); // Clear error if item found
-                                } else {
-                                    dropBaseDropRateInput.value = ''; // Clear previous value
-                                    dropErrorDiv.innerHTML = `<p>${translations[currentLanguage].no_base_drop_rate}</p>`;
-                                    dropErrorDiv.classList.remove('hidden');
-                                }
-                                autocompleteSuggestions.classList.add('hidden');
-                            });
-                            autocompleteSuggestions.appendChild(suggestionDiv);
-                        });
-                        autocompleteSuggestions.classList.remove('hidden');
-                    } else {
-                        // Display item not found only if no suggestions after 3 chars
-                        dropErrorDiv.innerHTML = `<p>${translations[currentLanguage].item_not_found}</p>`;
-                        dropErrorDiv.classList.remove('hidden');
-                    }
-                } else {
-                    dropErrorDiv.classList.add('hidden'); // Hide error if less than 3 chars
-                }
-            }
-
-            // Hide suggestions when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!dropItemNameInput.contains(e.target) && !autocompleteSuggestions.contains(e.target)) {
-                    autocompleteSuggestions.classList.add('hidden');
+            // Allow pressing Enter in the input field to trigger search
+            itemSearchInput.addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    fetchItemData();
                 }
             });
-            
-            // Drop Rate Calculator Logic
-            window.calculateDropRate = function() {
-                dropResultDiv.classList.add('hidden');
-                dropErrorDiv.classList.add('hidden');
-                dropResultDiv.innerHTML = '';
-                dropErrorDiv.innerHTML = '';
 
-                const itemName = dropItemNameInput.value.trim();
-                const baseDropRate = parseFloat(dropBaseDropRateInput.value);
-                let playerPP = parseFloat(dropPlayerPPInput.value);
-                const challengeBonus = parseFloat(dropChallengeBonusInput.value);
-                let anomalyBonus = parseFloat(dropAnomalyBonusInput.value);
-                const isAnkamaShieldActive = ankamaShieldToggle.checked;
+            // Initial fetch on load for "Iron"
+            fetchItemData();
 
-                if (isNaN(baseDropRate) || isNaN(playerPP) || isNaN(challengeBonus) || isNaN(anomalyBonus) || baseDropRate <= 0 || playerPP < 100 || anomalyBonus < 0 || anomalyBonus > 120) {
-                    dropErrorDiv.innerHTML = `<p>${translations[currentLanguage].drop_error_message}</p>`;
-                    dropErrorDiv.classList.remove('hidden');
+            async function fetchItemData() {
+                const searchTerm = itemSearchInput.value.trim();
+                if (!searchTerm) {
+                    alert('Please enter an item name to search.');
                     return;
                 }
 
-                if (itemName === "") {
-                    dropErrorDiv.innerHTML = `<p>${translations[currentLanguage].drop_error_item_name}</p>`;
-                    dropErrorDiv.classList.remove('hidden');
-                    return;
+                itemNameSpan.textContent = 'Loading...';
+                itemIdSpan.textContent = 'Loading...';
+                monsterList.innerHTML = '<li>Loading...</li>';
+
+                try {
+                    // 1. Search for the item using the FeathersJS `name[$like]` query
+                    const itemApiUrl = `${corsProxy}?${encodeURIComponent(`${dofusDBApiBase}/items?name[$like]=%${searchTerm}%`)}`;
+                    console.log('Fetching item from:', itemApiUrl);
+
+                    const itemResponse = await fetch(itemApiUrl);
+                    if (!itemResponse.ok) {
+                        throw new Error(`HTTP error! Status: ${itemResponse.status}`);
+                    }
+                    const itemData = await itemResponse.json();
+                    console.log('Item API Response:', itemData);
+
+                    let foundItem = null;
+                    if (itemData && itemData.data && itemData.data.length > 0) {
+                        // Assuming the first result is the most relevant, or you might need more logic
+                        foundItem = itemData.data[0]; 
+                        itemNameSpan.textContent = foundItem.name.en || foundItem.name; // Access English name if available, otherwise generic
+                        itemIdSpan.textContent = foundItem._id;
+                    } else {
+                        itemNameSpan.textContent = 'Item not found.';
+                        itemIdSpan.textContent = 'N/A';
+                        monsterList.innerHTML = '<li>Item not found.</li>';
+                        return; // Stop if item is not found
+                    }
+
+                    // 2. Now, to find drop rates, we need to search for monsters that drop this item.
+                    // The DofusDB API doesn't seem to have a direct endpoint for "monsters that drop item X".
+                    // This is a common challenge. We have two main approaches:
+                    //    a) Fetch ALL monsters and filter client-side (bad for large datasets)
+                    //    b) If the API allows, query monsters by a field that contains item drops (more efficient)
+
+                    // Based on the provided endpoints, there's a `/monsters` endpoint.
+                    // We need to see the structure of a monster object to know how to query for drops.
+                    // Let's assume (for now) that a monster object *might* have a 'drops' array or similar field
+                    // that references item IDs. If not, we'll have to iterate through all monsters.
+
+                    // For demonstration, let's try to fetch all monsters and filter for our item's ID.
+                    // This is NOT efficient for a full game, but helps us understand the data structure.
+                    // We'll add a $limit to not fetch too many for now.
+
+                    const monsterApiUrl = `${corsProxy}?${encodeURIComponent(`${dofusDBApiBase}/monsters?$limit=100`)}`; // Fetch first 100 monsters
+                    console.log('Fetching monsters from:', monsterApiUrl);
+
+                    const monsterResponse = await fetch(monsterApiUrl);
+                    if (!monsterResponse.ok) {
+                        throw new Error(`HTTP error! Status: ${monsterResponse.status}`);
+                    }
+                    const monsterData = await monsterResponse.json();
+                    console.log('Monster API Response:', monsterData);
+
+                    if (monsterData && monsterData.data && monsterData.data.length > 0) {
+                        monsterList.innerHTML = ''; // Clear previous loading message
+                        let foundDrops = false;
+                        monsterData.data.forEach(monster => {
+                            // This is a placeholder! We need to inspect actual monster data from the API
+                            // to know the exact field where drops are listed and how they reference items.
+                            // Assuming 'drops' is an array of objects, and each object has 'itemId' and 'rate'
+                            if (monster.drops && Array.isArray(monster.drops)) {
+                                monster.drops.forEach(drop => {
+                                    if (drop.item && drop.item._id === foundItem._id) {
+                                        const listItem = document.createElement('li');
+                                        listItem.textContent = `${monster.name.en || monster.name} (Drop Rate: ${drop.rate || 'N/A'}%)`;
+                                        monsterList.appendChild(listItem);
+                                        foundDrops = true;
+                                    }
+                                });
+                            }
+                        });
+
+                        if (!foundDrops) {
+                            monsterList.innerHTML = '<li>No monsters found that directly drop this item (or API structure not yet understood).</li>';
+                        }
+                    } else {
+                        monsterList.innerHTML = '<li>No monster data available.</li>';
+                    }
+
+                } catch (error) {
+                    console.error('Fetch error:', error);
+                    itemNameSpan.textContent = 'Error loading item.';
+                    itemIdSpan.textContent = 'Error.';
+                    monsterList.innerHTML = `<li>Error: ${error.message}</li>`;
                 }
-
-                let ppMultiplier;
-                if (playerPP < 0) {
-                    ppMultiplier = 1;
-                } else {
-                    const exponent = (250 - playerPP) / 85;
-                    ppMultiplier = 0.74 + (1.755 / (1 + Math.exp(exponent)));
-                    ppMultiplier = Math.min(ppMultiplier, 2.5);
-                }
-
-                let effectiveDropRate = baseDropRate * ppMultiplier * (1 + challengeBonus / 100);
-
-                if (anomalyBonus > 0) {
-                    effectiveDropRate *= (1 + anomalyBonus / 100);
-                }
-
-                if (isAnkamaShieldActive) {
-                    effectiveDropRate *= (1 + 5 / 100);
-                }
-
-                let chanceDenominator = 0;
-                if (effectiveDropRate > 0) {
-                    chanceDenominator = 100 / effectiveDropRate;
-                } else {
-                    chanceDenominator = Infinity;
-                }
-
-                dropResultDiv.innerHTML = `
-                    <p class="font-bold">${translations[currentLanguage].drop_result_prefix} "<strong>${itemName}</strong>" :</p>
-                    <ul class="list-none mt-2">
-                        <li class="text-lg mt-2"><strong>${translations[currentLanguage].drop_estimated_rate} : <span class="text-teal-300">${effectiveDropRate.toFixed(2)}%</span></strong></li>
-                        <li class="text-gray-400 italic mt-4"><em>${translations[currentLanguage].drop_average_combats} <span class="font-semibold">${chanceDenominator.toFixed(0)}</span> !</em></li>
-                    </ul>
-                `;
-                dropResultDiv.classList.remove('hidden');
-            };
-
-            // Event Listeners
-            languageSelector.addEventListener('change', (e) => setLanguage(e.target.value));
-            dropItemNameInput.addEventListener('input', handleItemSearch);
-
-            // Initial Load
-            const savedLang = localStorage.getItem('dofusDropLang') || 'fr';
-            setLanguage(savedLang);
-            fetchDofusItems(); // Load items when the page loads
+            }
         });
     </script>
-
 </body>
 </html>
