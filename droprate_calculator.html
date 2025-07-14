@@ -232,7 +232,7 @@
                     btn_back_home: "← Retour à l'accueil",
                     signature: "Apps by Ato",
                     disclaimer: "Dofus et toutes les images associées utilisées sur ce site sont la propriété d'Ankama",
-                    version_info: "Version 1.0.7 - Juillet 2025", // Updated version
+                    version_info: "Version 1.0.9 - Juillet 2025", // Updated version
                     drop_calculator_main_title: "Calculateur de Taux de Butin",
                     drop_calculator_subtitle: "Estimez vos chances d'obtenir des objets !",
                     drop_calculator_form_title: "Calculer le Taux de Butin",
@@ -258,7 +258,7 @@
                     btn_back_home: "← Back to Home",
                     signature: "Apps by Ato",
                     disclaimer: "Dofus and any related images used on this website are the properties of Ankama",
-                    version_info: "Version 1.0.7 - July 2025", // Updated version
+                    version_info: "Version 1.0.9 - July 2025", // Updated version
                     drop_calculator_main_title: "Drop Rate Calculator",
                     drop_calculator_subtitle: "Estimate your chances of obtaining items!",
                     drop_calculator_form_title: "Calculate Drop Rate",
@@ -284,7 +284,7 @@
                     btn_back_home: "← Volver al Inicio",
                     signature: "Apps by Ato",
                     disclaimer: "Dofus y cualquier imagen relacionada utilizada en este sitio web son propiedad de Ankama",
-                    version_info: "Versión 1.0.7 - Julio 2025", // Updated version
+                    version_info: "Versión 1.0.9 - Julio 2025", // Updated version
                     drop_calculator_main_title: "Calculadora de Tasa de Drop",
                     drop_calculator_subtitle: "¡Estima tus posibilidades de conseguir objetos!",
                     drop_calculator_form_title: "Calcular Tasa de Drop",
@@ -310,7 +310,7 @@
                     btn_back_home: "← Voltar ao Início",
                     signature: "Apps by Ato",
                     disclaimer: "Dofus e quaisquer imagens relacionadas usadas neste site são propriedade da Ankama",
-                    version_info: "Versão 1.0.7 - Julho 2025", // Updated version
+                    version_info: "Versão 1.0.9 - Julho 2025", // Updated version
                     drop_calculator_main_title: "Calculadora Taxa de Drop",
                     drop_calculator_subtitle: "Estime suas chances de obter itens!",
                     drop_calculator_form_title: "Calcular Taxa de Drop",
@@ -336,7 +336,7 @@
                     btn_back_home: "← Torna alla Home",
                     signature: "Apps by Ato",
                     disclaimer: "Dofus e qualsiasi immagine correlata utilizzata su questo sito Web è di proprietà di Ankama",
-                    version_info: "Versione 1.0.7 - Luglio 2025", // Updated version
+                    version_info: "Versão 1.0.9 - Luglio 2025", // Updated version
                     drop_calculator_main_title: "Calcolatore Tasso di Drop",
                     drop_calculator_subtitle: "Stima le tue possibilità di ottenere oggetti!",
                     drop_calculator_form_title: "Calcola Tasso di Drop",
@@ -355,7 +355,7 @@
                     item_not_found: "Oggetto non trovato.",
                     fetching_data: "Ricerca in corso...",
                     no_base_drop_rate: "Nessun tasso di drop base trovato per questo oggetto tramite i mostri. Inseriscilo manualmente.",
-                    label_select_monster_drop: "Seleziona un mostro per precompilare il tasso di drop:",
+                    label_select_monster_drop: "Seleziona un monstro per precompilare il tasso di drop:",
                     no_monster_drops: "Nessun mostro sembra rilasciare questo oggetto, o i dati non sono disponibili."
                 }
             };
@@ -415,11 +415,10 @@
                 const normalizedSearchTerm = normalizeString(searchTerm);
 
                 // Minimum character limit for search, based on Discord logs
-                if (normalizedSearchTerm.length < 5) { // Changed from 3 to 5 based on Discord info
+                if (normalizedSearchTerm.length < 5) { 
                     autocompleteSuggestions.classList.add('hidden');
                     autocompleteSuggestions.innerHTML = '';
-                    // Optionally show a message if search term is too short
-                    if (searchTerm.length > 0) { // Only show message if user has typed something
+                    if (searchTerm.length > 0) { 
                         showMessage(dropInfoDiv, `Veuillez taper au moins 5 caractères pour la recherche.`, 'info');
                     } else {
                         hideMessage(dropInfoDiv);
@@ -432,25 +431,38 @@
                 autocompleteSuggestions.classList.remove('hidden');
 
                 try {
-                    // Using slug.fr[$search] with normalized search term
-                    const encodedNormalizedSearchTerm = encodeURIComponent(normalizedSearchTerm);
-                    const queryString = `slug.fr[$search]=${encodedNormalizedSearchTerm}&_limit=10`;
+                    // Construct query string with all observed filters
+                    const params = new URLSearchParams();
+                    params.append('typeId[$ne]', '203'); // Exclure typeId 203
+                    params.append('$sort', '-id'); // Trier par ID décroissant
+                    params.append('slug.fr[$search]', normalizedSearchTerm); // Terme de recherche normalisé
+                    params.append('level[$gte]', '0'); // Niveau min 0
+                    params.append('level[$lte]', '200'); // Niveau max 200
+                    params.append('_limit', '50'); // Augmenter la limite pour plus de suggestions
+                    params.append('lang', 'fr'); // Langue des résultats
 
-                    const response = await fetch(`${DOFUSDB_API_BASE_URL}/items?${queryString}`);
+                    const queryString = params.toString();
+                    const fullUrl = `${DOFUSDB_API_BASE_URL}/items?${queryString}`;
+                    
+                    console.log("Requête API envoyée:", fullUrl); // Log the full URL for debugging
+
+                    const response = await fetch(fullUrl);
+                    const data = await response.json();
+
                     if (!response.ok) {
                         console.error(`API request failed with status ${response.status}. URL: ${response.url}`);
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                        throw new Error(`Erreur HTTP: ${response.status} - ${JSON.stringify(data)}`);
                     }
-                    const items = await response.json();
+
                     hideMessage(dropInfoDiv);
 
-                    if (items.length > 0) {
-                        items.forEach(item => {
+                    if (data.data && data.data.length > 0) { // Access data.data as the API returns an object with a 'data' array
+                        data.data.forEach(item => {
                             const suggestionDiv = document.createElement('div');
                             suggestionDiv.classList.add('autocomplete-suggestion-item');
                             suggestionDiv.innerHTML = `
-                                <img src="${item.illustration_url || 'https://placehold.co/32x32/1f2937/9ca3af?text=?'}" alt="Icône de ${item.nom}">
-                                <span>${item.nom}</span>
+                                <img src="${item.img || 'https://placehold.co/32x32/1f2937/9ca3af?text=?'}" alt="Icône de ${item.name.fr || item.name.en || 'Objet'}">
+                                <span>${item.name.fr || item.name.en || 'Nom inconnu'}</span>
                             `;
                             suggestionDiv.addEventListener('click', () => {
                                 selectItem(item);
@@ -463,7 +475,7 @@
                         showMessage(dropErrorDiv, translations[currentLanguage].item_not_found, 'error');
                     }
                 } catch (error) {
-                    console.error("Error fetching items:", error);
+                    console.error("Erreur lors de la récupération des objets:", error);
                     hideMessage(dropInfoDiv);
                     showMessage(dropErrorDiv, translations[currentLanguage].item_not_found + " " + (error.message || ""), 'error');
                     autocompleteSuggestions.classList.add('hidden');
@@ -473,8 +485,8 @@
             // Function to handle item selection from autocomplete
             async function selectItem(item) {
                 selectedItem = item;
-                dropItemNameInput.value = item.nom;
-                itemIcon.src = item.illustration_url || "https://placehold.co/32x32/1f2937/9ca3af?text=?";
+                dropItemNameInput.value = item.name.fr || item.name.en || ''; // Use the French name from the API response
+                itemIcon.src = item.img || "https://placehold.co/32x32/1f2937/9ca3af?text=?";
                 hideMessage(dropErrorDiv);
                 hideMessage(dropResultDiv);
                 dropBaseDropRateInput.value = ''; // Clear base drop rate
@@ -521,8 +533,8 @@
                         const monsterDropDiv = document.createElement('div');
                         monsterDropDiv.classList.add('monster-drop-item');
                         monsterDropDiv.innerHTML = `
-                            <img src="${monster.illustration_url || 'https://placehold.co/28x28/1f2937/9ca3af?text=?'}" alt="Icône de ${monster.nom}">
-                            <span>${monster.nom}</span>
+                            <img src="${monster.img || 'https://placehold.co/28x28/1f2937/9ca3af?text=?'}" alt="Icône de ${monster.name.fr || monster.name.en || 'Monstre'}">
+                            <span>${monster.name.fr || monster.name.en || 'Nom inconnu'}</span>
                             <span class="drop-rate">${rate}%</span>
                         `;
                         monsterDropDiv.addEventListener('click', () => {
