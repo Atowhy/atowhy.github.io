@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dofus Droprate Calculator</title>
-    <link rel="stylesheet" href="style.css"> </head>
+    <link rel="stylesheet" href="style.css"> <!-- Assuming you have a style.css -->
+</head>
 <body>
     <h1>Dofus Droprate Calculator</h1>
 
+    <!-- Input for item search -->
     <label for="itemSearchInput">Search Item:</label>
     <input type="text" id="itemSearchInput" value="Iron">
     <button id="searchButton">Search</button>
@@ -30,8 +32,8 @@
             const itemIdSpan = document.getElementById('itemId');
             const monsterList = document.getElementById('monsterList');
 
-            // DofusDB API base URL
-            const dofusDBApiBase = 'https://api.dofusdb.fr';
+            // Dofusdude API base URL (the one with clear documentation for search)
+            const dofusDudeApiBase = 'https://api.dofusdu.de';
             
             // The CORS proxy URL - STILL ESSENTIAL FOR GITHUB PAGES
             const corsProxy = 'https://corsproxy.io/'; 
@@ -60,66 +62,63 @@
                 monsterList.innerHTML = '<li>Loading...</li>';
 
                 try {
-                    // 1. Search for the item using the FeathersJS `name[$like]` query
-                    const itemApiUrl = `${corsProxy}?${encodeURIComponent(`${dofusDBApiBase}/items?name[$like]=%${searchTerm}%`)}`;
-                    console.log('Fetching item from:', itemApiUrl);
+                    // 1. Search for the item using dofusdude's documented search endpoint
+                    const itemApiEndpoint = `/dofus3/v1/en/items/resources/search?query=${encodeURIComponent(searchTerm)}`;
+                    const itemApiUrl = `${corsProxy}?${encodeURIComponent(dofusDudeApiBase + itemApiEndpoint)}`;
+                    
+                    console.log('Fetching item from (via proxy):', itemApiUrl);
 
                     const itemResponse = await fetch(itemApiUrl);
                     if (!itemResponse.ok) {
-                        throw new Error(`HTTP error! Status: ${itemResponse.status}`);
+                        // Log the full response text for more details on HTTP errors
+                        const errorText = await itemResponse.text();
+                        throw new Error(`HTTP error! Status: ${itemResponse.status}. Details: ${errorText}`);
                     }
                     const itemData = await itemResponse.json();
-                    console.log('Item API Response:', itemData);
+                    console.log('Item API Response (dofusdude):', itemData);
 
                     let foundItem = null;
-                    if (itemData && itemData.data && itemData.data.length > 0) {
-                        // Assuming the first result is the most relevant, or you might need more logic
-                        foundItem = itemData.data[0]; 
-                        itemNameSpan.textContent = foundItem.name.en || foundItem.name; // Access English name if available, otherwise generic
-                        itemIdSpan.textContent = foundItem._id;
+                    if (itemData && itemData.length > 0) {
+                        // Assuming the first result is the most relevant
+                        foundItem = itemData[0]; 
+                        itemNameSpan.textContent = foundItem.name.en || foundItem.name || 'Name not available'; 
+                        itemIdSpan.textContent = foundItem.ankamaId || 'ID not available'; // dofusdude uses ankamaId
                     } else {
                         itemNameSpan.textContent = 'Item not found.';
                         itemIdSpan.textContent = 'N/A';
                         monsterList.innerHTML = '<li>Item not found.</li>';
-                        return; // Stop if item is not found
+                        return; 
                     }
 
-                    // 2. Now, to find drop rates, we need to search for monsters that drop this item.
-                    // The DofusDB API doesn't seem to have a direct endpoint for "monsters that drop item X".
-                    // This is a common challenge. We have two main approaches:
-                    //    a) Fetch ALL monsters and filter client-side (bad for large datasets)
-                    //    b) If the API allows, query monsters by a field that contains item drops (more efficient)
+                    // 2. Attempt to find monsters that drop this item.
+                    // The dofusdude API's monster endpoint: /{game}/v1/{language}/monsters
+                    // We need to check if monster objects contain 'drops' information that links to item IDs.
+                    // Let's fetch a few monsters and inspect their structure.
 
-                    // Based on the provided endpoints, there's a `/monsters` endpoint.
-                    // We need to see the structure of a monster object to know how to query for drops.
-                    // Let's assume (for now) that a monster object *might* have a 'drops' array or similar field
-                    // that references item IDs. If not, we'll have to iterate through all monsters.
-
-                    // For demonstration, let's try to fetch all monsters and filter for our item's ID.
-                    // This is NOT efficient for a full game, but helps us understand the data structure.
-                    // We'll add a $limit to not fetch too many for now.
-
-                    const monsterApiUrl = `${corsProxy}?${encodeURIComponent(`${dofusDBApiBase}/monsters?$limit=100`)}`; // Fetch first 100 monsters
-                    console.log('Fetching monsters from:', monsterApiUrl);
+                    const monsterApiEndpoint = `/dofus3/v1/en/monsters?$limit=20`; // Fetch first 20 monsters
+                    const monsterApiUrl = `${corsProxy}?${encodeURIComponent(dofusDudeApiBase + monsterApiEndpoint)}`;
+                    console.log('Fetching monsters from (via proxy):', monsterApiUrl);
 
                     const monsterResponse = await fetch(monsterApiUrl);
                     if (!monsterResponse.ok) {
-                        throw new Error(`HTTP error! Status: ${monsterResponse.status}`);
+                        const errorText = await monsterResponse.text();
+                        throw new Error(`HTTP error! Status: ${monsterResponse.status}. Details: ${errorText}`);
                     }
                     const monsterData = await monsterResponse.json();
-                    console.log('Monster API Response:', monsterData);
+                    console.log('Monster API Response (dofusdude):', monsterData);
 
-                    if (monsterData && monsterData.data && monsterData.data.length > 0) {
+                    if (monsterData && monsterData.length > 0) {
                         monsterList.innerHTML = ''; // Clear previous loading message
                         let foundDrops = false;
-                        monsterData.data.forEach(monster => {
-                            // This is a placeholder! We need to inspect actual monster data from the API
-                            // to know the exact field where drops are listed and how they reference items.
-                            // Assuming 'drops' is an array of objects, and each object has 'itemId' and 'rate'
+                        monsterData.forEach(monster => {
+                            // This part is still hypothetical based on common API patterns.
+                            // We need to examine the 'Monster API Response' in your console to confirm the exact structure.
                             if (monster.drops && Array.isArray(monster.drops)) {
                                 monster.drops.forEach(drop => {
-                                    if (drop.item && drop.item._id === foundItem._id) {
+                                    // Assuming 'drop.item' or 'drop.itemId' exists and matches foundItem.ankamaId
+                                    if (drop.item && drop.item.ankamaId === foundItem.ankamaId) {
                                         const listItem = document.createElement('li');
+                                        // Drop rates are often percentages or base values. Need to confirm structure.
                                         listItem.textContent = `${monster.name.en || monster.name} (Drop Rate: ${drop.rate || 'N/A'}%)`;
                                         monsterList.appendChild(listItem);
                                         foundDrops = true;
@@ -129,10 +128,10 @@
                         });
 
                         if (!foundDrops) {
-                            monsterList.innerHTML = '<li>No monsters found that directly drop this item (or API structure not yet understood).</li>';
+                            monsterList.innerHTML = '<li>No monsters found that directly drop this item in the fetched sample (or API structure needs more investigation).</li>';
                         }
                     } else {
-                        monsterList.innerHTML = '<li>No monster data available.</li>';
+                        monsterList.innerHTML = '<li>No monster data available from API.</li>';
                     }
 
                 } catch (error) {
