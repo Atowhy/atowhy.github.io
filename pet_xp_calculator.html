@@ -87,7 +87,7 @@
         <div class="relative z-10 container mx-auto p-4 md:p-8 max-w-4xl min-h-screen flex flex-col">
             
             <div class="flex justify-between items-center mb-4">
-                <a href="#" class="text-teal-400 hover:text-teal-300" data-translate-key="btn_back_home">&larr; Retour à l'accueil</a>
+                <a href="https://atowhy.github.io/" class="text-teal-400 hover:text-teal-300" data-translate-key="btn_back_home">&larr; Retour à l'accueil</a>
                 <select id="language-selector" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-1 text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">
                     <option value="fr">🇫🇷 Français</option>
                     <option value="en">🇬🇧 English</option>
@@ -449,7 +449,6 @@
                 items.slice(0, 10).forEach(item => {
                     const itemDiv = document.createElement('div');
                     itemDiv.className = 'autocomplete-item';
-                    // CORRECTED: Use item.img first, then fallback
                     const iconUrl = item.img || item.icon_urls?.sd || defaultIconUrl;
                     itemDiv.innerHTML = `
                         <img src="${iconUrl}" alt="${item.name.fr}" class="object-cover w-8 h-8" onerror="this.onerror=null; this.src='${defaultIconUrl}'">
@@ -462,7 +461,6 @@
 
             const selectItem = (item) => {
                 resourceNameInput.value = item.name.fr;
-                // CORRECTED: Use item.img first, then fallback
                 const iconUrl = item.img || item.icon_urls?.sd || defaultIconUrl;
                 resourceIconContainer.innerHTML = `<img src="${iconUrl}" class="w-8 h-8 rounded object-contain" alt="${item.name.fr}" onerror="this.onerror=null; this.src='${defaultIconUrl}'">`;
                 
@@ -502,7 +500,6 @@
                         resources[resourceIndex] = { ...resources[resourceIndex], name, price, xp, ratio };
                     }
                 } else {
-                    // CORRECTED: Use item.img first, then fallback
                     const iconSrc = resourceIconContainer.querySelector('img')?.src || defaultIconUrl;
                     resources.push({ id: Date.now(), name, price, xp, ratio, icon: iconSrc });
                 }
