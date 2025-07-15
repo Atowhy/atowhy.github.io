@@ -12,19 +12,34 @@
             font-family: 'Inter', sans-serif;
             background-color: #111827; /* bg-gray-900 */
         }
-        .main-container::before {
-            content: '';
-            position: fixed;
+        /* Le fond d'image précédent est remplacé par la vidéo */
+        .main-container {
+            position: relative; /* Nécessaire pour le positionnement absolu de la vidéo */
+            min-height: 100vh;
+            overflow: hidden; /* Pour s'assurer que la vidéo ne déborde pas */
+        }
+        .video-background {
+            position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url('images/BG_01.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            opacity: 0.1; /* Increased opacity, removed blur */
-            z-index: -1;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -2; /* Place la vidéo derrière tout le contenu */
+        }
+        .video-background video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* S'assure que la vidéo couvre toute la zone */
+        }
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Overlay sombre pour la lisibilité du texte */
+            z-index: -1; /* Au-dessus de la vidéo, mais derrière le contenu */
         }
         .card-bg {
             background-color: rgba(31, 41, 55, 0.85); /* bg-gray-800 with 85% opacity */
@@ -34,7 +49,17 @@
 </head>
 <body class="text-white antialiased">
 
-    <div class="main-container relative min-h-screen">
+    <div class="main-container">
+        <!-- Conteneur pour la vidéo de fond -->
+        <div class="video-background">
+            <video autoplay loop muted playsinline>
+                <source src="images/headervideo.mp4" type="video/mp4">
+                Ton navigateur ne supporte pas la lecture de vidéos.
+            </video>
+        </div>
+        <!-- Overlay pour améliorer la lisibilité du texte sur la vidéo -->
+        <div class="video-overlay"></div>
+
         <div class="relative z-10 container mx-auto p-4 md:p-8 max-w-4xl min-h-screen flex flex-col">
             
             <!-- Sélecteur de langue -->
